@@ -1,0 +1,11 @@
+---
+import { getCollection } from 'astro:content';
+import Article from '../../components/Article.astro';
+
+export async function getStaticPaths() {
+  const posts = await getCollection('news', ({ data }) => import.meta.env.DEV || !data.draft);
+  return posts.map((post) => ({ params: { slug: post.id }, props: { post } }));
+}
+const { post } = Astro.props;
+---
+<Article post={post} />

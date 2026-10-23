@@ -1,0 +1,20 @@
+---
+import Hub from '../../../components/Hub.astro';
+import { allPosts } from '../../../lib/posts';
+import { CATEGORIES } from '../../../site.config';
+
+export function getStaticPaths() {
+  return Object.keys(CATEGORIES).filter((k) => k !== 'counterfeit-news').map((cat) => ({ params: { cat } }));
+}
+const { cat } = Astro.params;
+const label = CATEGORIES[cat!];
+const posts = (await allPosts()).filter((p) => p.data.category === cat);
+---
+<Hub
+  posts={posts}
+  active={cat!}
+  title={`${label} | Note Counting Machine Blog`}
+  heading={label}
+  lede="Practical guides on fake note detection and choosing the right cash counting machine."
+  description={`${label}: guides on fake note detection and note counting machines for Indian businesses.`}
+/>

@@ -1,0 +1,70 @@
+---
+// Listing page shared by /blog/ (everything) and /news/ (counterfeit news only).
+import Base from '../layouts/Base.astro';
+import PostCard from './PostCard.astro';
+import { postUrl, fmtDate, readMinutes, type Post } from '../lib/posts';
+import { CATEGORIES, SITE, publisher } from '../site.config';
+
+interface Props { posts: Post[]; title: string; heading: string; lede: string; description: string; active: string }
+const { posts, title, heading, lede, description, active } = Astro.props;
+const featured = posts.find((p) => p.data.featured) ?? posts[0];
+const rest = posts.filter((p) => p !== featured);
+
+const schema = [
+  publisher,
+  {
+    '@type': 'CollectionPage',
+    name: heading,
+    url: new URL(Astro.url.pathname, SITE).href,
+    hasPart: posts.slice(0, 20).map((p) => ({ '@type': p.collection === 'news' ? 'NewsArticle' : 'BlogPosting', headline: p.data.title, url: SITE + postUrl(p) })),
+  },
+];
+const chips = [
+  { href: '/blog/', label: 'All', key: 'all' },
+  { href: '/news/', label: CATEGORIES['counterfeit-news'], key: 'news' },
+  ...Object.entries(CATEGORIES).filter(([k]) => k !== 'counterfeit-news').map(([k, v]) => ({ href: `/blog/category/${k}/`, label: v, key: k })),
+];
+---
+<Base title={title} description={description} schema={schema}>
+<div class="wrap">
+  <header class="hub-head">
+    <span class="eyebrow">Fake note alert · Buying guides · नकली नोट</span>
+    <h1 class="display">{heading}</h1>
+    <p class="lede">{lede}</p>
+  </header>
+
+  {featured && (
+    <a class="featured" href={postUrl(featured)}>
+      <div class="featured__stat">
+        <span class="eyebrow" style="color:#0B1F33">{featured.data.tileSub}</span>
+        <span class="featured__num">{featured.data.tile}</span>
+        <span style="font-size:17px;font-weight:600">{featured.data.takeaways[0] ?? ''}</span>
+      </div>
+      <div class="featured__body">
+        <span class={`tag ${featured.collection === 'news' ? 'tag--news' : 'tag--guide'}`}>{featured.collection === 'news' ? 'Counterfeit news' : 'Guide'}</span>
+        <h2>{featured.data.title}</h2>
+        <p>{featured.data.description}</p>
+        <span class="featured__meta">{fmtDate(featured.data.pubDate)} · {readMinutes(featured.body)} min read</span>
+        <span class="featured__cta">Read the analysis →</span>
+      </div>
+    </a>
+  )}
+
+  <nav class="chips" aria-label="Topics">
+    {chips.map((c) => <a class="chip" href={c.href} aria-current={c.key === active ? 'page' : undefined}>{c.label}</a>)}
+  </nav>
+
+  <div class="grid">
+    {rest.map((p) => <PostCard post={p} />)}
+  </div>
+  {posts.length === 0 && <p class="lede">No posts here yet.</p>}
+
+  <section class="alerts">
+    <div style="flex:1 1 420px;min-width:0">
+      <h2>Get fake note alerts on WhatsApp</h2>
+      <p>One short message when RBI or police report a new fake note pattern in Delhi NCR. No spam, unsubscribe anytime.</p>
+    </div>
+    <a class="btn btn--amber" href="https://wa.me/918826035757?text=Please%20add%20me%20to%20fake%20note%20alerts">Join alerts on WhatsApp</a>
+  </section>
+</div>
+</Base>

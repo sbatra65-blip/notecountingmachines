@@ -1,0 +1,13 @@
+---
+import Hub from '../../components/Hub.astro';
+import { allPosts } from '../../lib/posts';
+const posts = await allPosts();
+---
+<Hub
+  posts={posts}
+  active="all"
+  title="Fake Currency News & Note Counting Machine Guides | Blog"
+  heading="Fake currency news and note counting machine guides"
+  lede="RBI counterfeit data explained, how to spot fake ₹500 and ₹200 notes, and plain buying guides for cash counting machines. Updated every month."
+  description="Fake note news from RBI data, how to spot counterfeit ₹500 notes, and buying guides for note counting machines in India."
+/>

@@ -1,0 +1,106 @@
+---
+import { render } from 'astro:content';
+import Base from '../layouts/Base.astro';
+import { allPosts, postUrl, categoryLabel, fmtDate, readMinutes, PRODUCTS, type Post } from '../lib/posts';
+import { SITE, publisher } from '../site.config';
+
+interface Props { post: Post }
+const { post } = Astro.props;
+const d = post.data;
+const { Content } = await render(post);
+const isNews = post.collection === 'news';
+const url = SITE + postUrl(post);
+const hubHref = isNews ? '/news/' : '/blog/';
+const hubLabel = isNews ? 'Fake currency news' : 'Blog';
+const product = d.product !== 'none' ? PRODUCTS[d.product] : null;
+const related = (await allPosts()).filter((p) => p.id !== post.id).slice(0, 4);
+
+const schema = [
+  publisher,
+  {
+    '@type': isNews ? 'NewsArticle' : 'BlogPosting',
+    headline: d.title,
+    description: d.description,
+    inLanguage: d.lang === 'hi' ? 'hi-IN' : 'en-IN',
+    datePublished: d.pubDate.toISOString(),
+    dateModified: (d.updatedDate ?? d.pubDate).toISOString(),
+    author: { '@type': 'Person', name: d.author },
+    publisher: { '@id': SITE + '/#org' },
+    mainEntityOfPage: url,
+    image: SITE + (product?.img ?? '/img/t800-mix-value-note-counting-machine.webp'),
+    citation: d.sources.map((s) => s.url),
+  },
+  {
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Home', item: SITE + '/' },
+      { '@type': 'ListItem', position: 2, name: hubLabel, item: SITE + hubHref },
+      { '@type': 'ListItem', position: 3, name: d.title, item: url },
+    ],
+  },
+  ...(d.faq.length
+    ? [{ '@type': 'FAQPage', mainEntity: d.faq.map((f) => ({ '@type': 'Question', name: f.q, acceptedAnswer: { '@type': 'Answer', text: f.a } })) }]
+    : []),
+];
+---
+<Base title={d.title.length > 50 ? d.title : `${d.title} | NoteCountingMachines.com`} description={d.description} type="article" schema={schema} lang={d.lang === 'hi' ? 'hi-IN' : 'en-IN'} image={product?.img}>
+<div class="article-wrap">
+  <article class="article">
+    <nav class="crumbs" aria-label="Breadcrumb"><a href="/">Home</a><span aria-hidden="true">/</span><a href={hubHref}>{hubLabel}</a><span aria-hidden="true">/</span><span>{categoryLabel(d.category)}</span></nav>
+    <span class={`tag ${isNews ? 'tag--news' : 'tag--guide'}`} style="align-self:flex-start">{categoryLabel(d.category)}</span>
+    <h1>{d.title}</h1>
+    <div class="byline">
+      <span>By <strong>{d.author}</strong></span>
+      <span>Published <time datetime={d.pubDate.toISOString()}>{fmtDate(d.pubDate, d.lang)}</time></span>
+      {d.updatedDate && <span>Updated <time datetime={d.updatedDate.toISOString()}>{fmtDate(d.updatedDate, d.lang)}</time></span>}
+      <span>{readMinutes(post.body)} min read</span>
+    </div>
+
+    {d.takeaways.length > 0 && (
+      <div class="takeaways">
+        <strong>{d.lang === 'hi' ? 'मुख्य बातें' : 'Key takeaways'}</strong>
+        <ul>{d.takeaways.map((t) => <li>{t}</li>)}</ul>
+      </div>
+    )}
+
+    <div class="prose"><Content /></div>
+
+    {product && (
+      <div class="product-cta">
+        <div class="product-cta__img"><img src={product.img} alt={product.name} loading="lazy" width="180" height="124"></div>
+        <div class="product-cta__text">
+          <strong>Catch fake notes at your counter</strong>
+          <span>{product.name}: {product.blurb}</span>
+        </div>
+        <a class="btn btn--amber" href={product.href}>See the machine</a>
+      </div>
+    )}
+
+    {d.faq.length > 0 && (
+      <section class="faq">
+        <h2>FAQ</h2>
+        {d.faq.map((f, i) => <details open={i === 0}><summary>{f.q}</summary><p>{f.a}</p></details>)}
+      </section>
+    )}
+
+    {d.sources.length > 0 && (
+      <div class="sources">
+        <strong>Sources</strong>
+        <ul style="margin:6px 0 0;padding-left:18px">{d.sources.map((s) => <li><a href={s.url} rel="nofollow noopener" target="_blank">{s.title}</a></li>)}</ul>
+      </div>
+    )}
+  </article>
+
+  <aside class="side" aria-label="More from the blog">
+    <div class="side__box">
+      <strong>Related</strong>
+      {related.map((p) => <a href={postUrl(p)}>{p.data.title}</a>)}
+    </div>
+    <div class="side__alert">
+      <strong style="font-family:'Archivo',sans-serif;font-size:18px">Fake note alerts</strong>
+      <span>Get one WhatsApp message when a new fake note pattern is reported in Delhi NCR.</span>
+      <a class="btn btn--ink" style="align-self:flex-start;font-size:14px" href="https://wa.me/918826035757?text=Please%20add%20me%20to%20fake%20note%20alerts">Join on WhatsApp</a>
+    </div>
+  </aside>
+</div>
+</Base>

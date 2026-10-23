@@ -1,0 +1,18 @@
+---
+import { postUrl, categoryLabel, fmtDate, readMinutes, type Post } from '../lib/posts';
+interface Props { post: Post }
+const { post } = Astro.props;
+const d = post.data;
+---
+<a class="card" href={postUrl(post)} data-cat={d.category} lang={d.lang === 'hi' ? 'hi' : undefined}>
+  <div class={`card__tile tile--${d.tileColor}`}>
+    <strong>{d.tile}</strong>
+    <span>{d.tileSub}</span>
+  </div>
+  <div class="card__body">
+    <span class="card__cat">{categoryLabel(d.category)}</span>
+    <h3>{d.title}</h3>
+    <p>{d.description}</p>
+    <span class="card__meta">{fmtDate(d.pubDate, d.lang)} · {readMinutes(post.body)} min read</span>
+  </div>
+</a>

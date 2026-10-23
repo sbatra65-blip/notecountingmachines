@@ -1,0 +1,13 @@
+---
+import Hub from '../../components/Hub.astro';
+import { allPosts } from '../../lib/posts';
+const posts = (await allPosts()).filter((p) => p.collection === 'news');
+---
+<Hub
+  posts={posts}
+  active="news"
+  title="Fake Currency News India: Counterfeit Note Updates"
+  heading="Fake currency news from India"
+  lede="Counterfeit note figures from RBI, police seizures and new fake note patterns, explained for shops, petrol pumps and jewellers."
+  description="Latest fake currency news in India: RBI counterfeit note data, ₹500 and ₹200 fake note trends, and what businesses should check."
+/>
