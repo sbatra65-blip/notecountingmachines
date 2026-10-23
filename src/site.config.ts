@@ -41,7 +41,7 @@ export const publisher = {
   name: SITE_NAME,
   legalName: 'Infinite Solutions',
   url: SITE + '/',
-  logo: { '@type': 'ImageObject', url: SITE + '/favicon.svg' },
+  logo: { '@type': 'ImageObject', url: SITE + '/icon-512.png', width: 512, height: 512 },
 };
 
 // Blog categories: the key is stored in each post; the label is shown on the site.
