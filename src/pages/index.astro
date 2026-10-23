@@ -304,22 +304,38 @@ WhatsApp for today's price</a>
 <h2 style="margin: 0; font-family: 'Archivo', sans-serif; font-weight: 800; font-size: 32px">Get today's best price</h2>
 <p style="margin: 0; font-size: 16px; color: #33475B; line-height: 1.55">Tell us your daily cash volume and we'll suggest the right cash counting machine. Reply within 30 minutes in working hours.</p>
 </div>
-<form id="enquiry" style="flex: 1 1 480px; min-width: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px">
-<label style="display: flex; flex-direction: column; gap: 6px; font-size: 14px; font-weight: 600">Name<input type="text" name="name" required autocomplete="name" style="height: 46px; border: 1px solid #B8C4CF; border-radius: 8px; padding: 0 12px; font-size: 15px; font-family: inherit"></label>
-<label style="display: flex; flex-direction: column; gap: 6px; font-size: 14px; font-weight: 600">Mobile / WhatsApp<input type="tel" name="phone" required autocomplete="tel" style="height: 46px; border: 1px solid #B8C4CF; border-radius: 8px; padding: 0 12px; font-size: 15px; font-family: inherit"></label>
-<label style="display: flex; flex-direction: column; gap: 6px; font-size: 14px; font-weight: 600">City<input type="text" name="city" style="height: 46px; border: 1px solid #B8C4CF; border-radius: 8px; padding: 0 12px; font-size: 15px; font-family: inherit"></label>
-<label style="display: flex; flex-direction: column; gap: 6px; font-size: 14px; font-weight: 600">Machine type<select name="type" style="height: 46px; border: 1px solid #B8C4CF; border-radius: 8px; padding: 0 12px; font-size: 15px; font-family: inherit; background: #FFFFFF"><option>Not sure yet</option><option>Loose note counter</option><option>Mix value counter</option><option>Bundle counter</option><option>Note sorter</option></select></label>
-<button type="submit" style="grid-column: 1 / -1; height: 50px; background: #F2A900; color: #0B1F33; border: 0; border-radius: 8px; font-weight: 700; font-size: 16px; font-family: inherit; cursor: pointer">Send enquiry</button>
+<form id="enquiry" action="/api/enquiry" method="post" style="flex: 1 1 480px; min-width: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px">
+<label style="display: flex; flex-direction: column; gap: 6px; font-size: 14px; font-weight: 600">Name<input type="text" name="name" required maxlength="100" autocomplete="name" style="height: 46px; border: 1px solid #B8C4CF; border-radius: 8px; padding: 0 12px; font-size: 15px; font-family: inherit"></label>
+<label style="display: flex; flex-direction: column; gap: 6px; font-size: 14px; font-weight: 600">Mobile<input type="tel" name="phone" required maxlength="20" minlength="8" inputmode="tel" autocomplete="tel" style="height: 46px; border: 1px solid #B8C4CF; border-radius: 8px; padding: 0 12px; font-size: 15px; font-family: inherit"></label>
+<label style="display: flex; flex-direction: column; gap: 6px; font-size: 14px; font-weight: 600">Email<input type="email" name="email" maxlength="120" autocomplete="email" style="height: 46px; border: 1px solid #B8C4CF; border-radius: 8px; padding: 0 12px; font-size: 15px; font-family: inherit"></label>
+<label style="display: flex; flex-direction: column; gap: 6px; font-size: 14px; font-weight: 600">City<input type="text" name="city" maxlength="60" style="height: 46px; border: 1px solid #B8C4CF; border-radius: 8px; padding: 0 12px; font-size: 15px; font-family: inherit"></label>
+<label style="display: flex; flex-direction: column; gap: 6px; font-size: 14px; font-weight: 600; grid-column: 1 / -1">Machine type<select name="type" style="height: 46px; border: 1px solid #B8C4CF; border-radius: 8px; padding: 0 12px; font-size: 15px; font-family: inherit; background: #FFFFFF"><option>Not sure yet</option><option>Loose note counter</option><option>Mix value counter</option><option>Bundle counter</option><option>Note sorter</option></select></label>
+<label style="display: flex; flex-direction: column; gap: 6px; font-size: 14px; font-weight: 600; grid-column: 1 / -1">Message (optional)<textarea name="message" rows="3" maxlength="1000" style="border: 1px solid #B8C4CF; border-radius: 8px; padding: 10px 12px; font-size: 15px; font-family: inherit; resize: vertical"></textarea></label>
+<label aria-hidden="true" style="position: absolute; left: -9999px">Company<input type="text" name="company" tabindex="-1" autocomplete="off"></label>
+<button type="submit" style="grid-column: 1 / -1; height: 50px; background: #F2A900; color: #0B1F33; border: 0; border-radius: 8px; font-weight: 700; font-size: 16px; font-family: inherit; cursor: pointer">Send enquiry by email</button>
+<p id="enquiry-status" role="status" aria-live="polite" style="grid-column: 1 / -1; margin: 0; font-size: 15px; min-height: 1.4em"></p>
 </form>
 </div>
 </section>
 <script>
   const form = document.getElementById('enquiry') as HTMLFormElement | null;
-  form?.addEventListener('submit', (e) => {
+  const status = document.getElementById('enquiry-status');
+  form?.addEventListener('submit', async (e) => {
     e.preventDefault();
-    const f = new FormData(form);
-    const msg = ['Enquiry from NoteCountingMachines.com', 'Name: ' + f.get('name'), 'Mobile: ' + f.get('phone'), 'City: ' + f.get('city'), 'Machine: ' + f.get('type')].join('\n');
-    window.open('https://wa.me/918826035757?text=' + encodeURIComponent(msg), '_blank', 'noopener');
+    const button = form.querySelector('button[type=submit]') as HTMLButtonElement;
+    button.disabled = true;
+    if (status) { status.textContent = 'Sending…'; status.style.color = '#33475B'; }
+    try {
+      const res = await fetch('/api/enquiry', { method: 'POST', body: new FormData(form), headers: { Accept: 'application/json' } });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(data.error || 'Could not send');
+      form.reset();
+      if (status) { status.textContent = 'Thank you. We have your enquiry and will reply soon, usually within 30 minutes in working hours.'; status.style.color = '#1F6B45'; }
+    } catch (err) {
+      if (status) { status.textContent = 'Sorry, that did not go through. Please email notecountingmachines@zohomail.in or call 88260 35757.'; status.style.color = '#A42E21'; }
+    } finally {
+      button.disabled = false;
+    }
   });
 </script>
 </Base>

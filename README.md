@@ -50,12 +50,24 @@ News posts get `NewsArticle` schema, guides get `BlogPosting`, both get breadcru
 - **Never explain how fakes are made** or name where to get them. Explain how to detect them.
 - Fill **Updated** whenever you change facts; freshness helps both Google and AI answers.
 
+## Enquiry form → email
+
+The homepage form posts to `/api/enquiry` (`worker/index.ts`), which emails **notecountingmachines@zohomail.in** through Cloudflare Email Routing. The customer's email (if given) is set as Reply-To, so you can reply directly.
+
+One-time setup (done on 23 Oct 2026, keep for reference):
+1. Cloudflare → notecountingmachines.com → Email → Email Routing → Settings → **Add missing records** (MX, SPF, DKIM).
+2. Email Routing → **Destination addresses** → add notecountingmachines@zohomail.in and click the link in the verification email.
+
+To change the receiving address, edit `TO` in `worker/index.ts` and `destination_address` in `wrangler.jsonc`, then verify the new address in Email Routing.
+
+Spam protection: a hidden honeypot field, same-site origin check and server-side validation. Add Cloudflare Turnstile later if spam appears.
+
 ## Local development
 
 ```bash
 npm install
 npm run dev        # http://localhost:4321
-npm run preview    # production build served by wrangler
+npm run preview    # production build + worker served by wrangler (test emails saved as .eml under .wrangler/)
 ```
 
 ## Where things live

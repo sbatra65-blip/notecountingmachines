@@ -1,9 +1,18 @@
 {
-  // Static site on Cloudflare Workers (static assets). Built by `astro build` into ./dist
+  // Static site + one small Worker for the enquiry form, on Cloudflare Workers.
   "name": "notecountingmachines",
+  "main": "worker/index.ts",
   "compatibility_date": "2026-10-23",
   "assets": {
     "directory": "./dist",
-    "not_found_handling": "404-page"
-  }
+    "binding": "ASSETS",
+    "not_found_handling": "404-page",
+    // Only /api/* reaches the Worker code; every other request is served straight from the static files.
+    "run_worker_first": ["/api/*"]
+  },
+  // Enquiry emails go to this address. It must be verified under Email Routing for notecountingmachines.com.
+  "send_email": [
+    { "name": "SEND_EMAIL", "destination_address": "notecountingmachines@zohomail.in" }
+  ],
+  "observability": { "enabled": true }
 }
