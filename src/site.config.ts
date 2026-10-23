@@ -4,7 +4,6 @@ export const SITE_NAME = 'NoteCountingMachines.com';
 
 export const CONTACT = {
   phones: ['+91-8826035757', '+91-8826035858', '+91-8826035959'],
-  whatsapp: '918826035757',
   email: 'notecountingmachines@zohomail.in',
   city: 'New Delhi',
 };
