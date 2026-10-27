@@ -2,7 +2,7 @@
 import { render } from 'astro:content';
 import Base from '../layouts/Base.astro';
 import { allPosts, postUrl, categoryLabel, fmtDate, readMinutes, PRODUCTS, type Post } from '../lib/posts';
-import { SITE, publisher } from '../site.config';
+import { SITE, SITE_NAME, publisher } from '../site.config';
 
 interface Props { post: Post }
 const { post } = Astro.props;
@@ -15,6 +15,10 @@ const hubLabel = isNews ? 'Fake currency news' : 'Blog';
 const product = d.product !== 'none' ? PRODUCTS[d.product] : null;
 const related = (await allPosts()).filter((p) => p.id !== post.id).slice(0, 4);
 
+// Dates are stored as plain days; publish them as 9:00 am IST so Google gets an explicit time zone.
+const ist = (dt: Date) => dt.toISOString().slice(0, 10) + 'T09:00:00+05:30';
+const articleImg = SITE + (product?.img ?? '/img/t800-mix-value-note-counting-machine.webp');
+
 const schema = [
   publisher,
   {
@@ -22,12 +26,14 @@ const schema = [
     headline: d.title,
     description: d.description,
     inLanguage: d.lang === 'hi' ? 'hi-IN' : 'en-IN',
-    datePublished: d.pubDate.toISOString(),
-    dateModified: (d.updatedDate ?? d.pubDate).toISOString(),
-    author: { '@type': 'Person', name: d.author },
+    datePublished: ist(d.pubDate),
+    dateModified: ist(d.updatedDate ?? d.pubDate),
+    // The byline is a team, not a person, so it is marked up as the organisation.
+    author: { '@type': 'Organization', name: SITE_NAME, url: SITE + '/' },
     publisher: { '@id': SITE + '/#org' },
-    mainEntityOfPage: url,
-    image: SITE + (product?.img ?? '/img/t800-mix-value-note-counting-machine.webp'),
+    mainEntityOfPage: { '@type': 'WebPage', '@id': url },
+    url,
+    image: [articleImg],
     citation: d.sources.map((s) => s.url),
   },
   {

@@ -1,6 +1,6 @@
 ---
 import Base from '../layouts/Base.astro';
-import { SITE, store } from '../site.config';
+import { SITE, store, publisher } from '../site.config';
 
 const faqs = [
   {
@@ -26,23 +26,48 @@ const faqs = [
 ];
 
 const products = [
-  { name: 'T-800 Mix Value Note Counting Machine', brand: 'Pacific International', image: '/img/t800-mix-value-note-counting-machine.webp', price: '24990',
+  { name: 'T-800 Mix Value Note Counting Machine', model: 'T-800', brand: 'Pacific International', image: '/img/t800-mix-value-note-counting-machine.webp', price: '24990',
     description: 'Mix value counting machine with UV, MG, IR, MT fake note detection, 1,200 notes/min, 250-note hopper, colour TFT display.' },
-  { name: 'T-100 Semi Value Note Counting Machine', brand: 'Pacific International', image: '/img/t100-semi-value-note-counting-machine.webp', price: '13990',
+  { name: 'T-100 Semi Value Note Counting Machine', model: 'T-100', brand: 'Pacific International', image: '/img/t100-semi-value-note-counting-machine.webp', price: '13990',
     description: 'Semi value loose note counter with UV, MG, IR, MT detection, double/half/chain note detection, 1,200 notes/min.' },
-  { name: 'Kores EasyCount 442 Note Counting Machine', brand: 'Kores', image: '/img/kores-easycount-442-note-counting-machine.webp', price: '13750',
+  { name: 'Kores EasyCount 442 Note Counting Machine', model: 'EasyCount 442', brand: 'Kores', image: '/img/kores-easycount-442-note-counting-machine.webp', price: '13750',
     description: 'Loose note counting machine with UV, MG, IR fake note detection, 900 notes/min, batch and preset counting, 5-hour continuous run.' },
 ];
 
+// Prices are reviewed on every build (the site rebuilds at least weekly), so they stay valid for a year from the build date.
+const priceValidUntil = new Date(Date.now() + 365 * 864e5).toISOString().slice(0, 10);
+const productUrl = SITE + '/#featured';
+
 const schema = [
   store,
+  publisher,
   {
     '@type': 'ItemList',
     name: 'Note counting machines',
     itemListElement: products.map((p, i) => ({
       '@type': 'ListItem', position: i + 1,
-      item: { '@type': 'Product', name: p.name, brand: { '@type': 'Brand', name: p.brand }, image: SITE + p.image, description: p.description,
-        offers: { '@type': 'Offer', price: p.price, priceCurrency: 'INR', availability: 'https://schema.org/InStock', seller: { '@id': SITE + '/#store' } } },
+      item: {
+        '@type': 'Product',
+        name: p.name,
+        url: productUrl,
+        sku: p.model,
+        mpn: p.model,
+        model: p.model,
+        category: 'Note counting machines',
+        brand: { '@type': 'Brand', name: p.brand },
+        image: [SITE + p.image],
+        description: p.description,
+        offers: {
+          '@type': 'Offer',
+          url: productUrl,
+          price: p.price,
+          priceCurrency: 'INR',
+          priceValidUntil,
+          itemCondition: 'https://schema.org/NewCondition',
+          availability: 'https://schema.org/InStock',
+          seller: { '@id': SITE + '/#store' },
+        },
+      },
     })),
   },
   {
