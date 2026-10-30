@@ -1,0 +1,284 @@
+---
+// Animated illustration of a mix value note counting machine for the homepage hero.
+// Notes are plain coloured shapes with no numbers, portraits or patterns, so they cannot be mistaken
+// for real banknotes. The script is bundled into a file by Astro, which keeps the strict CSP working.
+---
+<figure class="nc">
+  <svg class="nc__svg" viewBox="0 0 520 430" role="img" aria-labelledby="nc-title">
+    <title id="nc-title">Animation: a mix value note counting machine counting a stack of mixed notes, adding up their value and stopping on a fake note</title>
+    <defs>
+      <linearGradient id="nc-body" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stop-color="#1B4570" />
+        <stop offset="1" stop-color="#0B1F33" />
+      </linearGradient>
+      <linearGradient id="nc-top" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stop-color="#2A5A88" />
+        <stop offset="1" stop-color="#1B4570" />
+      </linearGradient>
+      <linearGradient id="nc-beam" x1="0" y1="0" x2="1" y2="0">
+        <stop offset="0" stop-color="#8B5CF6" stop-opacity="0" />
+        <stop offset=".5" stop-color="#C4B5FD" />
+        <stop offset="1" stop-color="#8B5CF6" stop-opacity="0" />
+      </linearGradient>
+      <radialGradient id="nc-glow" cx=".5" cy=".5" r=".5">
+        <stop offset="0" stop-color="#FF4D4D" stop-opacity=".55" />
+        <stop offset="1" stop-color="#FF4D4D" stop-opacity="0" />
+      </radialGradient>
+      <clipPath id="nc-hopper-clip"><rect x="0" y="0" width="520" height="128" /></clipPath>
+      <clipPath id="nc-stacker-clip"><rect x="122" y="300" width="276" height="96" rx="10" /></clipPath>
+    </defs>
+
+    <!-- floor shadow -->
+    <ellipse cx="260" cy="412" rx="210" ry="12" fill="#0B1F33" opacity=".12" />
+
+    <!-- hopper back plate and side guides -->
+    <rect x="138" y="10" width="244" height="124" rx="14" fill="#D5DEE7" />
+    <rect x="138" y="10" width="244" height="124" rx="14" fill="none" stroke="#B9C6D3" />
+    <g id="nc-hopper" clip-path="url(#nc-hopper-clip)"></g>
+    <rect x="128" y="40" width="14" height="96" rx="5" fill="#9FB0C1" />
+    <rect x="378" y="40" width="14" height="96" rx="5" fill="#9FB0C1" />
+
+    <!-- body -->
+    <rect x="54" y="118" width="412" height="282" rx="30" fill="url(#nc-body)" />
+    <rect x="54" y="118" width="412" height="40" rx="20" fill="url(#nc-top)" />
+    <rect x="140" y="124" width="240" height="10" rx="5" fill="#06121F" />
+    <rect id="nc-beam" x="140" y="126" width="240" height="6" rx="3" fill="url(#nc-beam)" opacity="0" />
+
+    <!-- display -->
+    <rect id="nc-screen" x="96" y="166" width="328" height="98" rx="12" fill="#081A2C" stroke="#24486C" stroke-width="2" />
+    <text id="nc-label" x="116" y="190" class="nc__label">MIX · COUNT</text>
+    <text x="404" y="190" text-anchor="end" class="nc__label">VALUE</text>
+    <text id="nc-count" x="114" y="246" class="nc__big">000</text>
+    <text id="nc-value" x="406" y="246" text-anchor="end" class="nc__mid">₹0</text>
+
+    <!-- sensor lights -->
+    <g class="nc__leds">
+      <g id="nc-led-uv"><rect x="100" y="276" width="50" height="20" rx="10" /><text x="125" y="290">UV</text></g>
+      <g id="nc-led-mg"><rect x="156" y="276" width="50" height="20" rx="10" /><text x="181" y="290">MG</text></g>
+      <g id="nc-led-ir"><rect x="212" y="276" width="50" height="20" rx="10" /><text x="237" y="290">IR</text></g>
+      <g id="nc-led-mt"><rect x="268" y="276" width="50" height="20" rx="10" /><text x="293" y="290">MT</text></g>
+    </g>
+    <circle cx="352" cy="286" r="9" fill="#2E5B86" />
+    <circle cx="380" cy="286" r="9" fill="#2E5B86" />
+    <circle cx="408" cy="286" r="9" fill="#F2A900" />
+
+    <!-- stacker (counted notes land here) -->
+    <rect x="118" y="300" width="284" height="98" rx="12" fill="#06121F" />
+    <rect id="nc-alarm" x="90" y="280" width="340" height="140" fill="url(#nc-glow)" opacity="0" />
+    <g id="nc-pile" clip-path="url(#nc-stacker-clip)"></g>
+    <rect x="118" y="300" width="284" height="14" rx="7" fill="#0B1F33" opacity=".85" />
+
+    <!-- rejected tag -->
+    <g id="nc-reject" opacity="0">
+      <rect x="402" y="330" width="96" height="30" rx="15" fill="#B42318" />
+      <text x="450" y="350" text-anchor="middle" class="nc__tag">✕ Fake</text>
+    </g>
+  </svg>
+  <figcaption class="nc__cap">
+    <span class="nc__dot" aria-hidden="true"></span>
+    Mix value counting · UV, MG, IR &amp; MT fake note check on every note
+  </figcaption>
+</figure>
+
+<style>
+  .nc { margin: 0; position: relative; border-radius: 16px; padding: 18px 12px 12px;
+    background: radial-gradient(circle at 1px 1px, #D5DEE7 1px, transparent 1.2px) 0 0 / 18px 18px, linear-gradient(180deg, #F7F9FB, #EEF2F6); }
+  .nc__svg { display: block; width: 100%; height: auto; }
+  .nc__svg :global(#nc-pile rect) { transform-box: fill-box; transform-origin: center; }
+  .nc__label { font: 600 12px 'Public Sans', sans-serif; letter-spacing: .12em; fill: #7FA3C4; }
+  .nc__big { font: 800 52px 'Archivo', sans-serif; fill: #FFC94D; font-variant-numeric: tabular-nums; letter-spacing: .04em; }
+  .nc__mid { font: 800 30px 'Archivo', sans-serif; fill: #FFC94D; font-variant-numeric: tabular-nums; }
+  .nc__tag { font: 700 13px 'Public Sans', sans-serif; fill: #FFFFFF; }
+  .nc__leds rect { fill: #13314F; transition: fill .12s; }
+  .nc__leds text { font: 700 11px 'Public Sans', sans-serif; fill: #5E84A8; text-anchor: middle; transition: fill .12s; }
+  .nc__leds .on rect { fill: var(--led); }
+  .nc__leds .on text { fill: #0B1F33; }
+  #nc-led-uv { --led: #A78BFA; } #nc-led-mg { --led: #60A5FA; } #nc-led-ir { --led: #F87171; } #nc-led-mt { --led: #FBBF24; }
+  .nc__leds .bad rect { fill: #EF4444; } .nc__leds .bad text { fill: #FFFFFF; }
+  .nc.is-fake #nc-screen { fill: #2A0B0F; stroke: #EF4444; }
+  .nc.is-fake .nc__big, .nc.is-fake .nc__mid { fill: #FF8A8A; }
+  .nc.is-fake #nc-label { fill: #FF8A8A; }
+  .nc.is-done #nc-label { fill: #4ADE80; }
+  .nc__cap { display: flex; align-items: center; gap: 8px; justify-content: center; margin-top: 6px;
+    font-size: 13px; color: #52677C; text-align: center; }
+  .nc__dot { width: 8px; height: 8px; border-radius: 50%; background: #1F7A4D; flex: none; animation: nc-pulse 1.6s infinite; }
+  @keyframes nc-pulse { 50% { opacity: .25; } }
+  @media (prefers-reduced-motion: reduce) { .nc__dot { animation: none; } }
+</style>
+
+<script>
+  const SVGNS = 'http://www.w3.org/2000/svg';
+  // Plain colours only: stone (500), yellow (200), lavender (100). No numbers or designs on the notes.
+  const DENOMS = [
+    { v: 500, face: '#C9C3B6', edge: '#A39C8C', w: 5 },
+    { v: 200, face: '#F0C35A', edge: '#C99A2E', w: 3 },
+    { v: 100, face: '#B9ADE0', edge: '#8F80C4', w: 3 },
+  ];
+  const BATCH = 40;
+  const HOPPER_VISIBLE = 7;
+  const PILE_MAX = 13;
+
+  const root = document.querySelector<HTMLElement>('.nc');
+  if (root) start(root);
+
+  function start(root: HTMLElement) {
+    const $ = <T extends Element>(id: string) => root.querySelector(`#${id}`) as T;
+    const hopper = $<SVGGElement>('nc-hopper');
+    const pile = $<SVGGElement>('nc-pile');
+    const countEl = $<SVGTextElement>('nc-count');
+    const valueEl = $<SVGTextElement>('nc-value');
+    const labelEl = $<SVGTextElement>('nc-label');
+    const beam = $<SVGRectElement>('nc-beam');
+    const alarm = $<SVGRectElement>('nc-alarm');
+    const reject = $<SVGGElement>('nc-reject');
+    const leds = ['uv', 'mg', 'ir', 'mt'].map((k) => $<SVGGElement>(`nc-led-${k}`));
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    let visible = true;
+    let wake: (() => void) | null = null;
+    const io = new IntersectionObserver(([e]) => { visible = e.isIntersecting; if (visible && wake) { wake(); wake = null; } });
+    io.observe(root);
+    document.addEventListener('visibilitychange', () => { if (!document.hidden && visible && wake) { wake(); wake = null; } });
+    const sleep = (ms: number) => new Promise<void>((r) => setTimeout(r, ms));
+    const ready = () => (visible && !document.hidden ? Promise.resolve() : new Promise<void>((r) => (wake = r)));
+    const anim = (el: Element, frames: Keyframe[], opts: KeyframeAnimationOptions) => el.animate(frames, { fill: 'forwards', ...opts }).finished;
+
+    const inr = (n: number) => '₹' + n.toLocaleString('en-IN');
+    const pad = (n: number) => String(n).padStart(3, '0');
+    function show(count: number, value: number, label = 'MIX · COUNT') {
+      countEl.textContent = pad(count);
+      valueEl.textContent = inr(value);
+      labelEl.textContent = label;
+    }
+
+    function el(tag: string, attrs: Record<string, string | number>) {
+      const n = document.createElementNS(SVGNS, tag);
+      for (const k in attrs) n.setAttribute(k, String(attrs[k]));
+      return n;
+    }
+
+    // A note seen from the front: plain coloured card with a lighter border panel.
+    function noteFace(d: (typeof DENOMS)[number], fake: boolean) {
+      const g = el('g', {});
+      g.append(
+        el('rect', { x: 0, y: 0, width: 200, height: 86, rx: 6, fill: d.face, stroke: d.edge, 'stroke-width': 2 }),
+        el('rect', { x: 12, y: 12, width: 176, height: 62, rx: 4, fill: 'none', stroke: '#FFFFFF', 'stroke-opacity': 0.45, 'stroke-width': 2 }),
+        el('circle', { cx: 150, cy: 43, r: 18, fill: '#FFFFFF', 'fill-opacity': fake ? 0.12 : 0.3 }),
+        el('rect', { x: 26, y: 28, width: 70, height: 6, rx: 3, fill: '#FFFFFF', 'fill-opacity': 0.4 }),
+        el('rect', { x: 26, y: 42, width: 50, height: 6, rx: 3, fill: '#FFFFFF', 'fill-opacity': 0.3 }),
+      );
+      return g;
+    }
+
+    type Note = { d: (typeof DENOMS)[number]; fake: boolean };
+    function makeBatch(): Note[] {
+      const notes: Note[] = Array.from({ length: BATCH }, () => ({ d: DENOMS[Math.floor(Math.random() * DENOMS.length)], fake: false }));
+      notes.splice(14 + Math.floor(Math.random() * 14), 0, { d: DENOMS[0], fake: true });
+      return notes;
+    }
+
+    // Hopper: the front note is lowest; notes behind sit a little higher and to the right.
+    function drawHopper(queue: Note[]) {
+      hopper.replaceChildren();
+      const n = Math.min(HOPPER_VISIBLE, queue.length);
+      for (let i = n - 1; i >= 0; i--) {
+        // outer group holds the position; the inner group is what gets animated
+        const pos = el('g', { transform: `translate(${160 + i * 3} ${42 - i * 4})` });
+        const g = noteFace(queue[i].d, queue[i].fake);
+        if (i === 0) g.setAttribute('data-front', '');
+        pos.append(g);
+        hopper.append(pos);
+      }
+    }
+
+    const slabs: SVGRectElement[] = [];
+    function slabY(i: number) { return 386 - i * 6; }
+
+    async function feed(note: Note) {
+      const front = hopper.querySelector('[data-front]');
+      const drop = front ? anim(front, [{ transform: 'translate(0,0)' }, { transform: 'translate(0,96px)' }], { duration: 170, easing: 'ease-in' }) : Promise.resolve();
+      leds.forEach((l, i) => setTimeout(() => l.classList.add(note.fake && (i === 0 || i === 2) ? 'bad' : 'on'), 60 + i * 25));
+      anim(beam, [{ opacity: 0 }, { opacity: 1 }, { opacity: 0 }], { duration: 260 });
+      await drop;
+
+      // Note lands in the stacker as a thin slab.
+      const idx = Math.min(slabs.length, PILE_MAX - 1);
+      const slab = el('rect', { x: 150, y: slabY(idx), width: 220, height: note.d.w + 2, rx: 2, fill: note.fake ? '#EF4444' : note.d.edge }) as SVGRectElement;
+      if (slabs.length >= PILE_MAX) { slabs.shift()?.remove(); slabs.forEach((s, i) => s.setAttribute('y', String(slabY(i)))); }
+      pile.append(slab);
+      slabs.push(slab);
+      const fall = anim(slab, [{ transform: `translate(0,${-(slabY(idx) - 300)}px) rotate(-2deg)`, opacity: 0.6 }, { transform: 'translate(0,0)', opacity: 1 }], { duration: 200, easing: 'cubic-bezier(.3,.6,.4,1)' });
+      setTimeout(() => leds.forEach((l) => l.classList.remove('on')), 150);
+      return { slab, fall };
+    }
+
+    async function rejectFake(slab: SVGRectElement, count: number, value: number) {
+      root.classList.add('is-fake');
+      show(count, value, '⚠ FAKE NOTE');
+      const blink = alarm.animate([{ opacity: 0 }, { opacity: 1 }, { opacity: 0.2 }], { duration: 420, iterations: 3 });
+      await sleep(1400);
+      blink.cancel();
+      // operator pulls the fake out of the stacker
+      await anim(slab, [{ transform: 'translate(0,0)' }, { transform: 'translate(140px,-24px)', opacity: 0 }], { duration: 420, easing: 'ease-in' });
+      slab.remove();
+      slabs.splice(slabs.indexOf(slab), 1);
+      reject.animate([{ opacity: 0, transform: 'translate(-10px,0)' }, { opacity: 1, transform: 'translate(0,0)' }, { opacity: 1 }, { opacity: 0 }], { duration: 1600, easing: 'ease-out' });
+      leds.forEach((l) => l.classList.remove('bad'));
+      root.classList.remove('is-fake');
+      show(count, value);
+      await sleep(350);
+    }
+
+    async function clearPile() {
+      await Promise.all(slabs.map((s, i) => anim(s, [{ transform: 'translate(0,0)' }, { transform: 'translate(0,-12px)', opacity: 0 }], { duration: 320, delay: i * 12 })));
+      slabs.forEach((s) => s.remove());
+      slabs.length = 0;
+    }
+
+    function staticFrame() {
+      const queue = makeBatch();
+      drawHopper(queue.slice(20));
+      let value = 0;
+      queue.slice(0, 20).forEach((n, i) => {
+        if (n.fake) return;
+        value += n.d.v;
+        if (i < PILE_MAX) {
+          const s = el('rect', { x: 150, y: slabY(slabs.length), width: 220, height: n.d.w + 2, rx: 2, fill: n.d.edge }) as SVGRectElement;
+          pile.append(s); slabs.push(s);
+        }
+      });
+      show(queue.slice(0, 20).filter((n) => !n.fake).length, value);
+    }
+
+    async function loop() {
+      for (;;) {
+        const queue = makeBatch();
+        let count = 0, value = 0;
+        show(0, 0);
+        drawHopper(queue);
+        await anim(hopper, [{ transform: 'translate(0,-90px)', opacity: 0 }, { transform: 'translate(0,0)', opacity: 1 }], { duration: 500, easing: 'cubic-bezier(.2,.8,.3,1)' });
+        await sleep(500);
+        while (queue.length) {
+          await ready();
+          const note = queue[0];
+          const { slab, fall } = await feed(note);
+          queue.shift();
+          drawHopper(queue);
+          await fall;
+          if (note.fake) { await rejectFake(slab, count, value); continue; }
+          count += 1; value += note.d.v;
+          show(count, value);
+          await sleep(70);
+        }
+        root.classList.add('is-done');
+        show(count, value, 'DONE ✓  1 FAKE REMOVED');
+        await sleep(2600);
+        root.classList.remove('is-done');
+        await clearPile();
+        await sleep(300);
+      }
+    }
+
+    if (reduce) staticFrame(); else loop();
+  }
+</script>

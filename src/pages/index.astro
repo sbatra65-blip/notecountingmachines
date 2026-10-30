@@ -1,5 +1,6 @@
 ---
 import Base from '../layouts/Base.astro';
+import CountingAnimation from '../components/CountingAnimation.astro';
 import { SITE, store, publisher } from '../site.config';
 
 const faqs = [
@@ -103,7 +104,7 @@ Call 88260 35757 for today's price</a>
 </div>
 <div style="flex: 1 1 460px; min-width: 0; position: relative">
 <div style="background: #FFFFFF; border-radius: 20px; border: 1px solid #DDE3E9; padding: 32px; display: flex; flex-direction: column; gap: 20px">
-<img fetchpriority="high" src="/img/t800-mix-value-note-counting-machine.webp" alt="Pacific International T-800 mix value note counting machine with fake note detection" style="width: 100%; height: auto; display: block; mix-blend-mode: multiply">
+<CountingAnimation />
 <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px">
 <div style="background: #0B1F33; color: #FFFFFF; border-radius: 12px; padding: 14px 16px">
 <div style="font-family: 'Archivo', sans-serif; font-size: 26px; font-weight: 800">1,200</div>

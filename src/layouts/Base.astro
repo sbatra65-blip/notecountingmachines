@@ -55,5 +55,16 @@ const ld = JSON.stringify({ '@context': 'https://schema.org', '@graph': schema }
 </main>
 <Footer />
 </div>
+<script>
+  // Fade sections in as they scroll into view (skipped when the visitor prefers reduced motion).
+  if (window.matchMedia('(prefers-reduced-motion: no-preference)').matches && 'IntersectionObserver' in window) {
+    const io = new IntersectionObserver((entries) => {
+      for (const e of entries) if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); }
+    }, { rootMargin: '0px 0px -8% 0px' });
+    document.querySelectorAll('section:not(#top)').forEach((s) => {
+      if (s.getBoundingClientRect().top > window.innerHeight) { s.classList.add('rv'); io.observe(s); }
+    });
+  }
+</script>
 </body>
 </html>

@@ -100,3 +100,15 @@ img { max-width: 100%; }
 .side__alert { background: #FFF4D6; border-radius: 14px; padding: 20px; display: flex; flex-direction: column; gap: 10px; }
 .side__alert span { font-size: 15px; line-height: 1.5; color: #4A3A10; }
 @media (max-width: 960px) { .side { position: static; } }
+
+/* Motion: sections fade up as they scroll into view; cards lift on hover. */
+@media (prefers-reduced-motion: no-preference) {
+  .rv { opacity: 0; transform: translateY(28px); transition: opacity .6s ease, transform .6s cubic-bezier(.2,.8,.3,1); }
+  .rv.in { opacity: 1; transform: none; }
+  a[href="#featured"][style*="border-radius: 14px"], #featured article, a.card {
+    transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease;
+  }
+  a[href="#featured"][style*="border-radius: 14px"]:hover, #featured article:hover, a.card:hover {
+    transform: translateY(-4px); box-shadow: 0 14px 30px -14px rgba(11, 31, 51, .35); border-color: #F2A900 !important;
+  }
+}
