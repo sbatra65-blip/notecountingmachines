@@ -57,6 +57,7 @@ const schema = [
     <h1>{d.title}</h1>
     <div class="byline">
       <span>By <strong>{d.author}</strong></span>
+      <a href="/editorial-policy/">How we check facts</a>
       <span>Published <time datetime={d.pubDate.toISOString()}>{fmtDate(d.pubDate, d.lang)}</time></span>
       {d.updatedDate && <span>Updated <time datetime={d.updatedDate.toISOString()}>{fmtDate(d.updatedDate, d.lang)}</time></span>}
       <span>{readMinutes(post.body)} min read</span>
