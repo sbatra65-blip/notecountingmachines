@@ -41,4 +41,4 @@ Your cash arrives sorted, or you mainly need a quick count and fake check before
 
 Customers pay in mixed notes all day, as at jewellery shops, wholesale counters and supermarkets. Skipping manual sorting saves several minutes on every large payment and removes the most common counting error.
 
-Not sure? Call **88260 35757** with your daily cash volume and we will suggest the right machine.
+Not sure? Call **88260 35757**, **88260 35858** or **88260 35959** with your daily cash volume and we will suggest the right machine.
