@@ -19,6 +19,14 @@ export const store = {
   email: CONTACT.email,
   image: SITE + '/img/t800-mix-value-note-counting-machine.webp',
   priceRange: '₹13,750 – ₹24,990',
+  openingHoursSpecification: [{
+    '@type': 'OpeningHoursSpecification',
+    dayOfWeek: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
+    opens: '10:00',
+    closes: '18:00',
+  }],
+  foundingDate: '2001',
+  hasMerchantReturnPolicy: { '@id': SITE + '/#returns' },
   address: {
     '@type': 'PostalAddress',
     streetAddress: '312, Plot No. 4, Vishwadeep Building, Janakpuri District Centre, Janakpuri',
@@ -34,6 +42,18 @@ export const store = {
   ],
 };
 
+// 7-day returns with all original packing undamaged (see /returns-refunds/).
+export const returnPolicy = {
+  '@type': 'MerchantReturnPolicy',
+  '@id': SITE + '/#returns',
+  url: SITE + '/returns-refunds/',
+  applicableCountry: 'IN',
+  returnPolicyCategory: 'https://schema.org/MerchantReturnFiniteReturnWindow',
+  merchantReturnDays: 7,
+  returnMethod: 'https://schema.org/ReturnByMail',
+  itemCondition: 'https://schema.org/NewCondition',
+};
+
 export const publisher = {
   '@type': 'Organization',
   '@id': SITE + '/#org',
@@ -41,6 +61,8 @@ export const publisher = {
   legalName: 'Infinite Solutions',
   url: SITE + '/',
   logo: { '@type': 'ImageObject', url: SITE + '/icon-512.png', width: 512, height: 512 },
+  foundingDate: '2001',
+  hasMerchantReturnPolicy: { '@id': SITE + '/#returns' },
 };
 
 // Blog categories: the key is stored in each post; the label is shown on the site.

@@ -1,7 +1,7 @@
 ---
 import Base from '../layouts/Base.astro';
 import CountingAnimation from '../components/CountingAnimation.astro';
-import { SITE, store, publisher } from '../site.config';
+import { SITE, store, publisher, returnPolicy } from '../site.config';
 
 const faqs = [
   {
@@ -42,6 +42,7 @@ const productUrl = SITE + '/#featured';
 const schema = [
   store,
   publisher,
+  returnPolicy,
   {
     '@type': 'ItemList',
     name: 'Note counting machines',
@@ -67,6 +68,7 @@ const schema = [
           itemCondition: 'https://schema.org/NewCondition',
           availability: 'https://schema.org/InStock',
           seller: { '@id': SITE + '/#store' },
+          hasMerchantReturnPolicy: { '@id': SITE + '/#returns' },
         },
       },
     })),

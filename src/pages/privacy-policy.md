@@ -53,7 +53,7 @@ Under the DPDP Act, 2023, you can ask us to:
 - withdraw any consent you gave, and
 - nominate another person to exercise these rights for you.
 
-To use any of these rights, or to raise a complaint, email **notecountingmachines@zohomail.in** or call **88260 35757**, **88260 35858** or **88260 35959**. We will reply as soon as possible. If you are not satisfied with our response, you may complain to the Data Protection Board of India.
+To use any of these rights, or to raise a complaint, contact our Grievance Officer, **Jagdish**, at **jagdish@infinitesolutions.co.in** or **88260 35757** (Monday to Saturday, 10 am to 6 pm). See [Grievance Redressal](/grievance-redressal/). If you are not satisfied with our response, you may complain to the Data Protection Board of India.
 
 ## Children
 
