@@ -22,4 +22,5 @@ Allow: /
 User-agent: Google-Extended
 Allow: /
 
+Sitemap: https://www.notecountingmachines.com/sitemap.xml
 Sitemap: https://www.notecountingmachines.com/sitemap-index.xml
