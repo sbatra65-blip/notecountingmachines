@@ -113,22 +113,7 @@ img { max-width: 100%; }
   }
 }
 
-/* Language menu (header) */
-.lang-menu { position: relative; }
-.lang-menu summary { list-style: none; display: inline-flex; align-items: center; gap: 6px; min-height: 44px; padding: 0 12px; border: 1px solid #B8C4CF; border-radius: 8px; cursor: pointer; font-size: 15px; font-weight: 600; color: #0B1F33; background: #FFFFFF; }
+/* Language menu (header). Layout is inline in LangMenu.astro; these are only hover and marker tweaks. */
 .lang-menu summary::-webkit-details-marker { display: none; }
-.lang-menu[open] summary { border-color: #0B1F33; }
-.lang-menu__panel { position: absolute; left: 0; top: calc(100% + 6px); z-index: 50; width: min(300px, calc(100vw - 32px)); background: #FFFFFF; border: 1px solid #DDE3E9; border-radius: 12px; box-shadow: 0 12px 32px rgba(11, 31, 51, 0.16); padding: 10px; display: flex; flex-direction: column; gap: 8px; }
-.lang-menu ul { list-style: none; margin: 0; padding: 0; }
-.lang-menu__own { display: flex; flex-direction: column; }
-.lang-menu__own a { display: block; padding: 10px 12px; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: 16px; color: #0B1F33; }
-.lang-menu__own a:hover { background: #F3F5F7; }
-.lang-menu__own a[aria-current="true"] { background: #FFF4D6; color: #6B4C00; }
-.lang-menu__note { font-size: 12px; font-weight: 700; letter-spacing: 0.04em; color: #52677C; padding: 6px 12px 0; border-top: 1px solid #DDE3E9; padding-top: 10px; }
-.lang-menu__other { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 2px; }
-.lang-menu__other a { display: block; padding: 8px 12px; border-radius: 8px; text-decoration: none; font-size: 15px; color: #33475B; }
-.lang-menu__other a:hover { background: #F3F5F7; color: #0B1F33; }
-.lang-en { display: inline-flex; align-items: center; min-height: 44px; padding: 0 12px; border: 1px solid #B8C4CF; border-radius: 8px; text-decoration: none; font-size: 15px; font-weight: 600; color: #0B1F33; background: #FFFFFF; }
-.lang-en:hover { border-color: #0B1F33; }
-.lang-en[aria-current="true"] { background: #FFF4D6; border-color: #F2A900; color: #6B4C00; }
-.lang-menu:has(.lang-menu__own a[aria-current="true"]) summary { background: #FFF4D6; border-color: #F2A900; color: #6B4C00; }
+.lang-menu__own a:not([aria-current]):hover, .lang-menu__other a:hover { background: #F3F5F7; }
+.lang-en:not([aria-current]):hover, .lang-menu[open] summary { border-color: #0B1F33 !important; }
