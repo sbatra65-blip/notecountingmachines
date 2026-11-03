@@ -76,11 +76,13 @@ export const CATEGORIES: Record<string, string> = {
 };
 
 // Amazon Associates (affiliate). Links carry this tag; posts with "Show Amazon tools box" ticked show them.
-// To link a specific product instead of a search, replace `url` with that product's link (keep ?tag=…).
+// To link a specific product instead of a search, use amazonProduct('<ASIN>').
 export const AMAZON_TAG = 'infidel02-21';
 const amazonSearch = (q: string) => `https://www.amazon.in/s?k=${encodeURIComponent(q)}&tag=${AMAZON_TAG}`;
+// A specific product: pass its ASIN (the B0… code in the Amazon link).
+const amazonProduct = (asin: string) => `https://www.amazon.in/dp/${asin}?tag=${AMAZON_TAG}`;
 export const AMAZON_TOOLS = [
-  { url: amazonSearch('uv torch currency checker'),
+  { url: amazonProduct('B0FRMCPVGL'),
     en: ['UV torch', 'Quick UV check of the paper: genuine notes stay dull, ordinary paper glows.'],
     hi: ['UV टॉर्च', 'कागज़ की UV जांच: असली नोट फीका रहता है, आम कागज़ चमकता है।'],
     pa: ['UV ਟਾਰਚ', 'ਕਾਗ਼ਜ਼ ਦੀ UV ਜਾਂਚ: ਅਸਲੀ ਨੋਟ ਫਿੱਕਾ ਰਹਿੰਦਾ ਹੈ, ਆਮ ਕਾਗ਼ਜ਼ ਚਮਕਦਾ ਹੈ।'] },
