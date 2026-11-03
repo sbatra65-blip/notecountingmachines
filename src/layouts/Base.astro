@@ -2,6 +2,7 @@
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import { SITE, SITE_NAME } from '../site.config';
+import { LANGS, type Alternates, type Lang } from '../i18n';
 import '../styles/global.css';
 
 interface Props {
@@ -12,8 +13,8 @@ interface Props {
   schema?: object[];
   lang?: string;
   noindex?: boolean;
-  // Language versions of this page, e.g. { en: '/machines/x/', hi: '/hi/machines/x/' }, for hreflang tags.
-  alternates?: { en: string; hi: string };
+  // Language versions of this page, e.g. { en: '/machines/x/', hi: '/hi/machines/x/', pa: … }, for hreflang tags and the language menu.
+  alternates?: Alternates;
 }
 
 const { title, description, image = '/img/t800-mix-value-note-counting-machine.webp', type = 'website', schema = [], lang = 'en-IN', noindex = false, alternates } = Astro.props;
@@ -29,9 +30,8 @@ const ld = JSON.stringify({ '@context': 'https://schema.org', '@graph': schema }
 <title>{title}</title>
 <meta name="description" content={description}>
 <link rel="canonical" href={canonical}>
-{alternates && <link rel="alternate" hreflang="en-IN" href={new URL(alternates.en, SITE).href} />}
-{alternates && <link rel="alternate" hreflang="hi-IN" href={new URL(alternates.hi, SITE).href} />}
-{alternates && <link rel="alternate" hreflang="x-default" href={new URL(alternates.en, SITE).href} />}
+{alternates && Object.entries(alternates).map(([l, href]) => <link rel="alternate" hreflang={LANGS[l as Lang].htmlLang} href={new URL(href, SITE).href} />)}
+{alternates?.en && <link rel="alternate" hreflang="x-default" href={new URL(alternates.en, SITE).href} />}
 <meta name="robots" content={noindex ? 'noindex, nofollow' : 'index, follow, max-image-preview:large'}>
 <meta property="og:type" content={type}>
 <meta property="og:site_name" content={SITE_NAME}>
@@ -49,12 +49,12 @@ const ld = JSON.stringify({ '@context': 'https://schema.org', '@graph': schema }
 <link rel="sitemap" href="/sitemap.xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700;800&family=Public+Sans:wght@400;500;600&family=Noto+Sans+Devanagari:wght@500;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700;800&family=Public+Sans:wght@400;500;600&family=Noto+Sans+Devanagari:wght@500;700&family=Noto+Sans+Gurmukhi:wght@500;700&display=swap">
 {schema.length > 0 && <script type="application/ld+json" set:html={ld} />}
 </head>
 <body>
 <div class="page">
-<Header />
+<Header alternates={alternates} lang={lang} />
 <main>
 <slot />
 </main>

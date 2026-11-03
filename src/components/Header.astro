@@ -1,5 +1,9 @@
 ---
 // Generated from the homepage design.
+import LangMenu from './LangMenu.astro';
+import type { Alternates } from '../i18n';
+interface Props { alternates?: Alternates; lang?: string }
+const { alternates, lang } = Astro.props;
 ---
 <!-- Top bar -->
 <div style="background: #0B1F33; color: #DCE3EA; font-size: 13px">
@@ -22,8 +26,11 @@
 <a href="/#prices" style="text-decoration: none">Price List</a>
 <a href="/blog/" style="text-decoration: none">Blog &amp; Fake Note News</a>
 <a href="/note-counting-machine-near-me/" style="text-decoration: none">Near Me</a>
-<a href="/hi/" hreflang="hi" lang="hi" style="text-decoration: none; font-weight: 600">हिंदी</a>
+
 </div>
+<div style="display: flex; align-items: center; gap: 12px">
+<LangMenu alternates={alternates} lang={lang} />
 <a href="/#quote" style="background: #0B1F33; color: #FFFFFF; text-decoration: none; padding: 12px 20px; border-radius: 8px; font-weight: 600; font-size: 15px; min-height: 44px; box-sizing: border-box; display: inline-flex; align-items: center">Get a quote</a>
+</div>
 </nav>
 </header>

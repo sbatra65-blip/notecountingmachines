@@ -1,0 +1,62 @@
+---
+// Language dropdown in the header.
+// Top part: our own translated pages (indexed by Google). Bottom part: other Indian languages through
+// Google Translate, which opens a translated copy of the current page on Google's site, so no third-party
+// script runs on ours and the Content-Security-Policy stays strict.
+import { LANGS, LANG_LIST, type Alternates, type Lang } from '../i18n';
+import { SITE } from '../site.config';
+
+interface Props { alternates?: Alternates; lang?: string }
+const { alternates = {}, lang = 'en-IN' } = Astro.props;
+const current = (LANG_LIST.find((l) => LANGS[l].htmlLang === lang) ?? 'en') as Lang;
+const pageUrl = new URL(Astro.url.pathname, SITE).href;
+
+// Google language codes with names written in their own script.
+const others = [
+  ['bn', 'বাংলা', 'Bengali'], ['gu', 'ગુજરાતી', 'Gujarati'], ['mr', 'मराठी', 'Marathi'], ['ta', 'தமிழ்', 'Tamil'],
+  ['te', 'తెలుగు', 'Telugu'], ['kn', 'ಕನ್ನಡ', 'Kannada'], ['ml', 'മലയാളം', 'Malayalam'], ['or', 'ଓଡ଼ିଆ', 'Odia'],
+  ['as', 'অসমীয়া', 'Assamese'], ['ur', 'اردو', 'Urdu'],
+];
+const gt = (tl: string) => `https://translate.google.com/translate?sl=auto&tl=${tl}&u=${encodeURIComponent(pageUrl)}`;
+---
+<details class="lang-menu">
+  <summary aria-label="Choose language">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
+    <span lang={current}>{LANGS[current].label}</span>
+    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg>
+  </summary>
+  <div class="lang-menu__panel">
+    <ul class="lang-menu__own">
+      {LANG_LIST.map((l) => (
+        <li><a href={alternates[l] ?? (l === current ? Astro.url.pathname : LANGS[l].home)} hreflang={l} lang={l} aria-current={l === current ? 'true' : undefined}>{LANGS[l].label}</a></li>
+      ))}
+    </ul>
+    <span class="lang-menu__note">Other languages · Google Translate</span>
+    <ul class="lang-menu__other">
+      {others.map(([code, native, en]) => (
+        <li><a href={gt(code)} lang={code} rel="nofollow noopener" target="_blank" title={`${en} (Google Translate)`}>{native}</a></li>
+      ))}
+    </ul>
+  </div>
+</details>
+
+<script>
+  // Close the menu when the visitor clicks elsewhere or presses Escape.
+  document.addEventListener('click', (e) => {
+    document.querySelectorAll<HTMLDetailsElement>('details.lang-menu[open]').forEach((d) => {
+      if (!d.contains(e.target as Node)) d.open = false;
+    });
+  });
+  // Open the panel towards whichever side has room, so it never runs off the screen.
+  document.querySelectorAll<HTMLDetailsElement>('details.lang-menu').forEach((d) => {
+    d.addEventListener('toggle', () => {
+      const panel = d.querySelector<HTMLElement>('.lang-menu__panel');
+      if (!d.open || !panel) return;
+      panel.classList.remove('is-flipped');
+      if (panel.getBoundingClientRect().right > document.documentElement.clientWidth - 8) panel.classList.add('is-flipped');
+    });
+  });
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') document.querySelectorAll<HTMLDetailsElement>('details.lang-menu[open]').forEach((d) => (d.open = false));
+  });
+</script>

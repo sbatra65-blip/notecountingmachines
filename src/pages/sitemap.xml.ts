@@ -3,7 +3,8 @@
 import type { APIRoute } from 'astro';
 import { allPosts, postUrl } from '../lib/posts';
 import { SITE, CATEGORIES } from '../site.config';
-import { MACHINES } from '../data/machines';
+import { MACHINES, machinePath } from '../data/machines';
+import { LANG_LIST, LANGS } from '../i18n';
 
 const day = (d: Date) => d.toISOString().slice(0, 10);
 
@@ -16,12 +17,11 @@ export const GET: APIRoute = async () => {
     { loc: '/', lastmod: built },
     { loc: '/news/', lastmod: latest(posts.filter((p) => p.collection === 'news')) },
     { loc: '/blog/', lastmod: latest(posts) },
-    { loc: '/hi/', lastmod: built },
-    { loc: '/note-counting-machine-near-me/', lastmod: built },
-    { loc: '/hi/note-counting-machine-near-me/', lastmod: built },
   ];
-  for (const m of MACHINES) {
-    urls.push({ loc: `/machines/${m.slug}/`, lastmod: built }, { loc: `/hi/machines/${m.slug}/`, lastmod: built });
+  for (const l of LANG_LIST) {
+    if (l !== 'en') urls.push({ loc: LANGS[l].home, lastmod: built });
+    urls.push({ loc: l === 'en' ? '/note-counting-machine-near-me/' : `/${l}/note-counting-machine-near-me/`, lastmod: built });
+    for (const m of MACHINES) urls.push({ loc: machinePath(m, l), lastmod: built });
   }
 
   for (const cat of Object.keys(CATEGORIES).filter((k) => k !== 'counterfeit-news')) {

@@ -1,85 +1,44 @@
 ---
-// "Note counting machine near me" page, English or Hindi.
-// Used by /note-counting-machine-near-me/ and /hi/note-counting-machine-near-me/.
+// "Note counting machine near me" page in any language from src/i18n.ts.
+// Used by /note-counting-machine-near-me/ and /<lang>/note-counting-machine-near-me/.
 import Base from '../layouts/Base.astro';
-import { MACHINES, machinePath, inr, type Lang } from '../data/machines';
+import { MACHINES, machinePath, inr, tr } from '../data/machines';
+import { UI, NEAR, LANGS, LANG_LIST, type Lang } from '../i18n';
 import { SITE, store, publisher } from '../site.config';
 
 interface Props { lang: Lang }
 const { lang } = Astro.props;
-const hi = lang === 'hi';
-const path = hi ? '/hi/note-counting-machine-near-me/' : '/note-counting-machine-near-me/';
-const url = SITE + path;
+const pathFor = (l: Lang) => (l === 'en' ? '/note-counting-machine-near-me/' : `/${l}/note-counting-machine-near-me/`);
+const url = SITE + pathFor(lang);
+const L = NEAR[lang];
+const U = UI[lang];
 const mapUrl = 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent('Vishwadeep Building, Janakpuri District Centre, Janakpuri, New Delhi 110058');
 const phones = [['+918826035757', '88260 35757'], ['+918826035858', '88260 35858'], ['+918826035959', '88260 35959']];
-
-const areas = hi
-  ? [
-      { city: 'दिल्ली', where: 'पश्चिमी दिल्ली (जनकपुरी, उत्तम नगर, द्वारका, राजौरी गार्डन, विकासपुरी), पुरानी दिल्ली (चांदनी चौक, सदर बाज़ार, चावड़ी बाज़ार), करोल बाग, लाजपत नगर, नेहरू प्लेस, पीतमपुरा, रोहिणी, लक्ष्मी नगर और पूरी दिल्ली' },
-      { city: 'गुड़गांव (गुरुग्राम)', where: 'पूरा गुड़गांव, सोहना रोड, उद्योग विहार, MG रोड' },
-      { city: 'नोएडा', where: 'नोएडा और ग्रेटर नोएडा' },
-      { city: 'फरीदाबाद', where: 'पूरा फरीदाबाद और बल्लभगढ़' },
-      { city: 'गाज़ियाबाद', where: 'गाज़ियाबाद, इंदिरापुरम, वैशाली, साहिबाबाद' },
-      { city: 'NCR से बाहर', where: 'पूरे भारत में कूरियर से डिलीवरी, फोन पर सपोर्ट' },
-    ]
-  : [
-      { city: 'Delhi', where: 'West Delhi (Janakpuri, Uttam Nagar, Dwarka, Rajouri Garden, Vikaspuri), Old Delhi (Chandni Chowk, Sadar Bazar, Chawri Bazar), Karol Bagh, Lajpat Nagar, Nehru Place, Pitampura, Rohini, Laxmi Nagar and all of Delhi' },
-      { city: 'Gurgaon (Gurugram)', where: 'All of Gurgaon including Sohna Road, Udyog Vihar, MG Road' },
-      { city: 'Noida', where: 'Noida and Greater Noida' },
-      { city: 'Faridabad', where: 'All of Faridabad and Ballabgarh' },
-      { city: 'Ghaziabad', where: 'Ghaziabad, Indirapuram, Vaishali, Sahibabad' },
-      { city: 'Outside NCR', where: 'Courier delivery across India with phone support' },
-    ];
-
-const faq = hi
-  ? [
-      { q: 'मेरे पास नोट गिनने की मशीन कहां मिलेगी?', a: 'हम दिल्ली के जनकपुरी डिस्ट्रिक्ट सेंटर में हैं और दिल्ली, गुड़गांव, नोएडा, फरीदाबाद और गाज़ियाबाद में आपकी दुकान या ऑफिस पर फ्री डेमो देते हैं। 88260 35757 पर कॉल करें।' },
-      { q: 'क्या आप दुकान पर आकर मशीन का डेमो देते हैं?', a: 'हां। दिल्ली NCR में आपकी दुकान या ऑफिस पर फ्री डेमो, ताकि खरीदने से पहले आप मशीन को अपने नोटों पर चलाकर देख सकें।' },
-      { q: 'क्या मैं ऑफिस आकर मशीन देख सकता हूं?', a: 'हां, सोमवार से शनिवार सुबह 10 से शाम 6 बजे तक। आने से पहले कॉल कर दें ताकि जो मॉडल आप देखना चाहते हैं वह तैयार रहे।' },
-      { q: 'खरीदने के बाद सर्विस कौन करेगा?', a: 'हमसे खरीदी गई मशीनों की सर्विस हम करते हैं: पैसिफिक इंटरनेशनल मशीनों पर 1 साल ऑनसाइट वारंटी और कोरस पर कंपनी वारंटी, नए नोटों के लिए सॉफ्टवेयर अपडेट के साथ।' },
-    ]
-  : [
-      { q: 'Where can I buy a note counting machine near me in Delhi?', a: 'We are at Janakpuri District Centre, New Delhi, and give a free demo at your shop or office across Delhi, Gurgaon, Noida, Faridabad and Ghaziabad. Call 88260 35757.' },
-      { q: 'Do you come to my shop for a demo?', a: 'Yes. Free demo at your shop or office anywhere in Delhi NCR, so you can run the machine on your own notes before you buy.' },
-      { q: 'Can I visit your office to see the machines?', a: 'Yes, Monday to Saturday, 10 am to 6 pm. Call before you come so the model you want to see is ready.' },
-      { q: 'Who services the machine after I buy it?', a: 'We service machines bought from us: 1-year onsite warranty on Pacific International machines and manufacturer warranty on Kores, with software updates for new notes.' },
-    ];
-
-const L = hi
-  ? { title: 'नोट गिनने की मशीन मेरे पास – दिल्ली NCR डीलर | डेमो', desc: 'दिल्ली NCR में नोट गिनने की मशीन के डीलर: जनकपुरी, नई दिल्ली। दिल्ली, गुड़गांव, नोएडा, फरीदाबाद, गाज़ियाबाद में दुकान पर फ्री डेमो और सर्विस।', h1: 'मेरे पास नोट गिनने की मशीन: दिल्ली NCR में डीलर, डेमो और सर्विस', answer: 'नोट गिनने की मशीन, कैश काउंटिंग मशीन और मिक्स वैल्यू मशीन खरीदने के लिए हमारा ऑफिस जनकपुरी डिस्ट्रिक्ट सेंटर, नई दिल्ली में है, और हम दिल्ली, गुड़गांव, नोएडा, फरीदाबाद और गाज़ियाबाद में आपकी दुकान या ऑफिस पर फ्री डेमो देते हैं।', visit: 'हमारा पता', hours: 'सोमवार–शनिवार, सुबह 10 से शाम 6 · रविवार बंद', map: 'Google Maps पर रास्ता देखें', call: 'कॉल करें', areasH: 'हम कहां डेमो, डिलीवरी और सर्विस देते हैं', city: 'शहर', where: 'इलाके', machinesH: 'स्टॉक में मशीनें', onReq: 'कीमत के लिए कॉल करें', faqH: 'सवाल-जवाब', switchTo: 'Read in English', home: 'होम', quote: 'फ्री डेमो बुक करें' }
-  : { title: 'Note Counting Machine Near Me – Dealer in Delhi NCR | Demo', desc: 'Note counting machine dealer near you in Delhi NCR: Janakpuri, New Delhi. Free demo and service at your shop in Delhi, Gurgaon, Noida, Faridabad, Ghaziabad.', h1: 'Note counting machine near me: dealer, demo and service in Delhi NCR', answer: 'To buy a note counting, cash counting or mix value counting machine near you, visit our office at Janakpuri District Centre, New Delhi, or book a free demo at your shop or office anywhere in Delhi, Gurgaon, Noida, Faridabad and Ghaziabad.', visit: 'Our address', hours: 'Monday–Saturday, 10 am to 6 pm · Sunday closed', map: 'Get directions on Google Maps', call: 'Call', areasH: 'Where we give demos, delivery and service', city: 'City', where: 'Areas', machinesH: 'Machines in stock', onReq: 'Price on request', faqH: 'FAQ', switchTo: 'हिंदी में पढ़ें', home: 'Home', quote: 'Book a free demo' };
 
 const schema = [
   { ...store, hasMap: mapUrl },
   publisher,
-  {
-    '@type': 'WebPage',
-    '@id': url,
-    url,
-    name: L.title,
-    inLanguage: hi ? 'hi-IN' : 'en-IN',
-    about: { '@id': SITE + '/#store' },
-  },
+  { '@type': 'WebPage', '@id': url, url, name: L.title, inLanguage: LANGS[lang].htmlLang, about: { '@id': SITE + '/#store' } },
   {
     '@type': 'BreadcrumbList',
     itemListElement: [
-      { '@type': 'ListItem', position: 1, name: L.home, item: SITE + (hi ? '/hi/' : '/') },
+      { '@type': 'ListItem', position: 1, name: U.home, item: SITE + LANGS[lang].home },
       { '@type': 'ListItem', position: 2, name: L.h1, item: url },
     ],
   },
-  { '@type': 'FAQPage', mainEntity: faq.map((f) => ({ '@type': 'Question', name: f.q, acceptedAnswer: { '@type': 'Answer', text: f.a } })) },
+  { '@type': 'FAQPage', mainEntity: L.faq.map(([q, a]) => ({ '@type': 'Question', name: q, acceptedAnswer: { '@type': 'Answer', text: a } })) },
 ];
 ---
-<Base title={L.title} description={L.desc} schema={schema} lang={hi ? 'hi-IN' : 'en-IN'} alternates={{ en: '/note-counting-machine-near-me/', hi: '/hi/note-counting-machine-near-me/' }}>
+<Base title={L.title} description={L.desc} schema={schema} lang={LANGS[lang].htmlLang} alternates={Object.fromEntries(LANG_LIST.map((l) => [l, pathFor(l)]))}>
 <div class="wrap" style="padding-top: 28px; padding-bottom: 64px">
   <nav class="crumbs" aria-label="Breadcrumb" style="display:flex;flex-wrap:wrap;gap:8px;align-items:center;font-size:14px">
-    <a href={hi ? '/hi/' : '/'}>{L.home}</a><span aria-hidden="true">/</span><span>{hi ? 'मेरे पास' : 'Near me'}</span>
-    <a href={hi ? '/note-counting-machine-near-me/' : '/hi/note-counting-machine-near-me/'} hreflang={hi ? 'en' : 'hi'} style="margin-left:auto;font-weight:600">{L.switchTo}</a>
+    <a href={LANGS[lang].home}>{U.home}</a><span aria-hidden="true">/</span><span>{U.nearMe}</span>
+    <span style="margin-left:auto;display:flex;gap:12px">{LANG_LIST.filter((l) => l !== lang).map((l) => <a href={pathFor(l)} hreflang={l} lang={l} style="font-weight:600">{LANGS[l].label}</a>)}</span>
   </nav>
 
   <section style="display:flex;flex-wrap:wrap;gap:40px;align-items:flex-start;margin-top:20px">
     <div style="flex:1 1 480px;min-width:0;display:flex;flex-direction:column;gap:18px">
-      <h1 style="margin:0;font-family:'Archivo',sans-serif;font-weight:800;font-size:clamp(30px,4.2vw,48px);line-height:1.08;letter-spacing:-0.01em">{L.h1}</h1>
+      <h1 style="margin:0;font-family:'Archivo',sans-serif;font-weight:800;font-size:clamp(30px,4.2vw,48px);line-height:1.12;letter-spacing:-0.01em">{L.h1}</h1>
       <p style="margin:0;font-size:18px;line-height:1.6;color:#33475B">{L.answer}</p>
       <a class="btn btn--amber" href="/#quote" style="align-self:flex-start">{L.quote}</a>
     </div>
@@ -97,7 +56,7 @@ const schema = [
     <div style="overflow-x:auto;background:#FFFFFF;border:1px solid #DDE3E9;border-radius:14px">
       <table style="width:100%;border-collapse:collapse;font-size:15px">
         <thead><tr style="background:#0B1F33;color:#FFFFFF;text-align:left"><th scope="col" style="padding:12px 16px">{L.city}</th><th scope="col" style="padding:12px 16px">{L.where}</th></tr></thead>
-        <tbody>{areas.map((a) => <tr style="border-top:1px solid #DDE3E9"><th scope="row" style="text-align:left;padding:12px 16px;white-space:nowrap">{a.city}</th><td style="padding:12px 16px;line-height:1.55">{a.where}</td></tr>)}</tbody>
+        <tbody>{L.areas.map(([city, where]) => <tr style="border-top:1px solid #DDE3E9"><th scope="row" style="text-align:left;padding:12px 16px;white-space:nowrap">{city}</th><td style="padding:12px 16px;line-height:1.55">{where}</td></tr>)}</tbody>
       </table>
     </div>
   </section>
@@ -107,18 +66,18 @@ const schema = [
     <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px">
       {MACHINES.map((m) => (
         <a href={machinePath(m, lang)} style="text-decoration:none;background:#FFFFFF;border:1px solid #DDE3E9;border-radius:14px;padding:18px;display:flex;flex-direction:column;gap:8px">
-          <img loading="lazy" decoding="async" src={m.image} alt={m.name[lang]} style="width:100%;height:130px;object-fit:contain;mix-blend-mode:multiply">
-          <strong style="font-family:'Archivo',sans-serif;font-size:17px;color:#0B1F33">{m.name[lang]}</strong>
-          <span style="font-size:14px;color:#52677C;line-height:1.5">{m.short[lang]}</span>
-          <span style="font-size:14px;font-weight:700;color:#0B1F33">{m.price ? `MRP ${inr(m.price)} →` : `${L.onReq} →`}</span>
+          <img loading="lazy" decoding="async" src={m.image} alt={tr(m.name, lang)} style="width:100%;height:130px;object-fit:contain;mix-blend-mode:multiply">
+          <strong style="font-family:'Archivo',sans-serif;font-size:17px;color:#0B1F33">{tr(m.name, lang)}</strong>
+          <span style="font-size:14px;color:#52677C;line-height:1.5">{tr(m.short, lang)}</span>
+          <span style="font-size:14px;font-weight:700;color:#0B1F33">{m.price ? `MRP ${inr(m.price)} →` : `${U.onRequest} →`}</span>
         </a>
       ))}
     </div>
   </section>
 
   <section class="faq" style="margin-top:56px;max-width:820px">
-    <h2>{L.faqH}</h2>
-    {faq.map((f, i) => <details open={i === 0}><summary>{f.q}</summary><p>{f.a}</p></details>)}
+    <h2>{U.faq}</h2>
+    {L.faq.map(([q, a], i) => <details open={i === 0}><summary>{q}</summary><p>{a}</p></details>)}
   </section>
 </div>
 </Base>

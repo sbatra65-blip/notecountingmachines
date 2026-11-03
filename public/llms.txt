@@ -17,6 +17,7 @@
 ## Near me / local
 - Address, map and areas served in Delhi NCR: https://www.notecountingmachines.com/note-counting-machine-near-me/
 - Hindi (नोट गिनने की मशीन): https://www.notecountingmachines.com/hi/ and https://www.notecountingmachines.com/hi/note-counting-machine-near-me/
+- Punjabi (ਨੋਟ ਗਿਣਨ ਵਾਲੀ ਮਸ਼ੀਨ): https://www.notecountingmachines.com/pa/ and https://www.notecountingmachines.com/pa/note-counting-machine-near-me/; every machine page also exists under /pa/machines/
 
 ## Guides and news
 - Fake currency news: https://www.notecountingmachines.com/news/

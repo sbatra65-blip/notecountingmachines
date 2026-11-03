@@ -2,8 +2,12 @@
 // Product pages (/machines/<slug>/ and /hi/machines/<slug>/) are built from this file.
 // Only put specs here that are in the brochure; change the price here and every page updates.
 
-export type Lang = 'en' | 'hi';
-type T = { en: string; hi: string };
+import { PA, type MachineText } from './machines.pa';
+import type { Lang } from '../i18n';
+export type { Lang };
+
+// en and hi are written inline below; other languages are merged in from their own files (machines.pa.ts …).
+type T = { en: string; hi: string; pa?: string };
 type QA = { q: T; a: T };
 
 export interface Machine {
@@ -230,7 +234,25 @@ export const MACHINES: Machine[] = [
   },
 ];
 
-export const machinePath = (m: Machine, lang: Lang) => (lang === 'hi' ? `/hi/machines/${m.slug}/` : `/machines/${m.slug}/`);
+// Merge a language file into the machine list. Fails the build if a translation is missing or out of order.
+function merge(lang: 'pa', texts: Record<string, MachineText>) {
+  for (const m of MACHINES) {
+    const x = texts[m.slug];
+    if (!x) throw new Error(`machines.${lang}.ts: no text for ${m.slug}`);
+    if (x.features.length !== m.features.length || x.specs.length !== m.specs.length || x.faq.length !== m.faq.length)
+      throw new Error(`machines.${lang}.ts: ${m.slug} has a different number of features, specs or FAQs than English`);
+    for (const k of ['name', 'short', 'type', 'title', 'description', 'answer', 'bestFor'] as const) m[k][lang] = x[k];
+    m.features.forEach((f, i) => (f[lang] = x.features[i]));
+    m.specs.forEach((s, i) => { s.label = { ...s.label, [lang]: x.specs[i][0] }; s.value = { ...s.value, [lang]: x.specs[i][1] }; });
+    m.faq.forEach((f, i) => { f.q[lang] = x.faq[i][0]; f.a[lang] = x.faq[i][1]; });
+  }
+}
+merge('pa', PA);
+
+// Text in the requested language, falling back to English.
+export const tr = (x: T, lang: Lang) => x[lang] ?? x.en;
+
+export const machinePath = (m: Machine, lang: Lang) => (lang === 'en' ? `/machines/${m.slug}/` : `/${lang}/machines/${m.slug}/`);
 
 export const inr = (n: number) => '₹' + n.toLocaleString('en-IN');
 
