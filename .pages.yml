@@ -99,6 +99,9 @@ content:
       - name: featured
         label: Feature at top of blog
         type: boolean
+      - name: amazonTools
+        label: Show Amazon tools box (UV torch, lamp, magnifier; affiliate links)
+        type: boolean
       - name: draft
         label: Draft (not published)
         type: boolean

@@ -14,6 +14,7 @@ takeaways:
   - "Check the size and colour first: each denomination has its own, and photocopies and toy notes often get them wrong."
   - "No single check is proof. If two or more checks fail, don't accept the note."
 product: ec442
+amazonTools: true
 draft: true
 faq:
   - q: "What is the easiest way to spot a fake note?"

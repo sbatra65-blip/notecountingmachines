@@ -13,6 +13,7 @@ takeaways:
   - "Feel the portrait, Ashoka Pillar, the H mark and the angular lines: genuine print is raised."
   - "A genuine ₹200 is bright yellow and measures 66 mm × 146 mm."
 product: t100
+amazonTools: true
 draft: true
 faq:
   - q: "What colour is a genuine ₹200 note?"

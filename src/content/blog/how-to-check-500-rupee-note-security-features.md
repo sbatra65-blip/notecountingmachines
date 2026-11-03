@@ -13,6 +13,7 @@ takeaways:
   - "Hold it flat at eye level: a hidden 500 appears in the vertical band right of the portrait."
   - "Fakes are most often caught by touch and tilt, not by looking at the print."
 product: ec442
+amazonTools: true
 draft: false
 faq:
   - q: "What colour should the security thread on a ₹500 note change to?"

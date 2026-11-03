@@ -2,7 +2,7 @@
 layout: ../layouts/Policy.astro
 title: Disclaimer
 description: Important notes about trademarks, prices, counterfeit detection limits and the educational information on NoteCountingMachines.com.
-updated: 2026-10-30
+updated: 2026-11-03
 ---
 
 NoteCountingMachines.com is run by **Infinite Solutions**, New Delhi. Please read these notes before relying on information from this site.
@@ -22,6 +22,10 @@ Note counting machines with UV, MG, IR, MT or CIS sensors greatly reduce the ris
 ## News and guides are for information only
 
 Articles about counterfeit currency, banking rules and laws are general information, written in good faith from the sources we link. They are not legal, financial or tax advice. Rules and figures change, so check official sources such as rbi.org.in for decisions that matter. If you receive a suspected counterfeit note, follow RBI's guidance and report it to your bank or the police.
+
+## Affiliate links
+
+As an Amazon Associate we earn from qualifying purchases. Some guides link to products on Amazon.in, such as UV torches and magnifiers, through the Amazon Associates programme. These links are marked "See on Amazon". You pay the same price; Amazon pays us a small commission. Products sold on Amazon are sold and supported by their sellers, not by Infinite Solutions.
 
 ## Links to other websites
 

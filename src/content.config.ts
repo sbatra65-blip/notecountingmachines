@@ -18,6 +18,7 @@ const post = z.object({
   faq: z.array(z.object({ q: z.string(), a: z.string() })).default([]),
   sources: z.array(z.object({ title: z.string(), url: z.string().url() })).default([]),
   featured: z.boolean().default(false),
+  amazonTools: z.boolean().default(false),
   draft: z.boolean().default(false),
 });
 

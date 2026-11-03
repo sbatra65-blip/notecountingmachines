@@ -74,3 +74,22 @@ export const CATEGORIES: Record<string, string> = {
   hindi: 'हिंदी',
   punjabi: 'ਪੰਜਾਬੀ',
 };
+
+// Amazon Associates (affiliate). Links carry this tag; posts with "Show Amazon tools box" ticked show them.
+// To link a specific product instead of a search, replace `url` with that product's link (keep ?tag=…).
+export const AMAZON_TAG = 'infidel02-21';
+const amazonSearch = (q: string) => `https://www.amazon.in/s?k=${encodeURIComponent(q)}&tag=${AMAZON_TAG}`;
+export const AMAZON_TOOLS = [
+  { url: amazonSearch('uv torch currency checker'),
+    en: ['UV torch', 'Quick UV check of the paper: genuine notes stay dull, ordinary paper glows.'],
+    hi: ['UV टॉर्च', 'कागज़ की UV जांच: असली नोट फीका रहता है, आम कागज़ चमकता है।'],
+    pa: ['UV ਟਾਰਚ', 'ਕਾਗ਼ਜ਼ ਦੀ UV ਜਾਂਚ: ਅਸਲੀ ਨੋਟ ਫਿੱਕਾ ਰਹਿੰਦਾ ਹੈ, ਆਮ ਕਾਗ਼ਜ਼ ਚਮਕਦਾ ਹੈ।'] },
+  { url: amazonSearch('uv fake note detector lamp'),
+    en: ['UV note checker lamp', 'Counter-top UV lamp for checking notes at the till.'],
+    hi: ['UV नोट जांच लैंप', 'काउंटर पर रखने वाला UV लैंप।'],
+    pa: ['UV ਨੋਟ ਜਾਂਚ ਲੈਂਪ', 'ਕਾਊਂਟਰ ਉੱਤੇ ਰੱਖਣ ਵਾਲਾ UV ਲੈਂਪ।'] },
+  { url: amazonSearch('magnifying glass with led light'),
+    en: ['Magnifier with light', 'For reading the micro letters RBI, भारत and the value.'],
+    hi: ['लाइट वाला लेंस', 'सूक्ष्म अक्षर RBI, भारत और मूल्य पढ़ने के लिए।'],
+    pa: ['ਲਾਈਟ ਵਾਲਾ ਲੈਂਜ਼', 'ਬਰੀਕ ਅੱਖਰ RBI, भारत ਅਤੇ ਮੁੱਲ ਪੜ੍ਹਨ ਲਈ।'] },
+] as const;
