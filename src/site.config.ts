@@ -86,11 +86,11 @@ export const AMAZON_TOOLS = [
     en: ['UV torch', 'Quick UV check of the paper: genuine notes stay dull, ordinary paper glows.'],
     hi: ['UV टॉर्च', 'कागज़ की UV जांच: असली नोट फीका रहता है, आम कागज़ चमकता है।'],
     pa: ['UV ਟਾਰਚ', 'ਕਾਗ਼ਜ਼ ਦੀ UV ਜਾਂਚ: ਅਸਲੀ ਨੋਟ ਫਿੱਕਾ ਰਹਿੰਦਾ ਹੈ, ਆਮ ਕਾਗ਼ਜ਼ ਚਮਕਦਾ ਹੈ।'] },
-  { url: amazonSearch('uv fake note detector lamp'),
+  { url: amazonProduct('B07LGVW5N7'), // swaggers UV + white light note checker (most-reviewed UV note lamp on Amazon.in, Nov 2026)
     en: ['UV note checker lamp', 'Counter-top UV lamp for checking notes at the till.'],
     hi: ['UV नोट जांच लैंप', 'काउंटर पर रखने वाला UV लैंप।'],
     pa: ['UV ਨੋਟ ਜਾਂਚ ਲੈਂਪ', 'ਕਾਊਂਟਰ ਉੱਤੇ ਰੱਖਣ ਵਾਲਾ UV ਲੈਂਪ।'] },
-  { url: amazonSearch('magnifying glass with led light'),
+  { url: amazonProduct('B09BB45JXG'), // ZIVIK 3-LED magnifier 3X/45X (Amazon.in best seller, Nov 2026)
     en: ['Magnifier with light', 'For reading the micro letters RBI, भारत and the value.'],
     hi: ['लाइट वाला लेंस', 'सूक्ष्म अक्षर RBI, भारत और मूल्य पढ़ने के लिए।'],
     pa: ['ਲਾਈਟ ਵਾਲਾ ਲੈਂਜ਼', 'ਬਰੀਕ ਅੱਖਰ RBI, भारत ਅਤੇ ਮੁੱਲ ਪੜ੍ਹਨ ਲਈ।'] },
