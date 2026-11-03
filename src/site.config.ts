@@ -82,7 +82,7 @@ const amazonSearch = (q: string) => `https://www.amazon.in/s?k=${encodeURICompon
 // A specific product: pass its ASIN (the B0… code in the Amazon link).
 const amazonProduct = (asin: string) => `https://www.amazon.in/dp/${asin}?tag=${AMAZON_TAG}`;
 export const AMAZON_TOOLS = [
-  { url: amazonProduct('B0FRMCPVGL'),
+  { url: amazonProduct('B0D6GKSXJQ'), // WISKA rechargeable UV torch
     en: ['UV torch', 'Quick UV check of the paper: genuine notes stay dull, ordinary paper glows.'],
     hi: ['UV टॉर्च', 'कागज़ की UV जांच: असली नोट फीका रहता है, आम कागज़ चमकता है।'],
     pa: ['UV ਟਾਰਚ', 'ਕਾਗ਼ਜ਼ ਦੀ UV ਜਾਂਚ: ਅਸਲੀ ਨੋਟ ਫਿੱਕਾ ਰਹਿੰਦਾ ਹੈ, ਆਮ ਕਾਗ਼ਜ਼ ਚਮਕਦਾ ਹੈ।'] },
