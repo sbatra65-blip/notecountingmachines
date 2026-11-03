@@ -4,7 +4,7 @@ interface Props { post: Post }
 const { post } = Astro.props;
 const d = post.data;
 ---
-<a class="card" href={postUrl(post)} data-cat={d.category} lang={d.lang === 'hi' ? 'hi' : undefined}>
+<a class="card" href={postUrl(post)} data-cat={d.category} lang={d.lang !== 'en' ? d.lang : undefined}>
   <div class={`card__tile tile--${d.tileColor}`}>
     <strong>{d.tile}</strong>
     <span>{d.tileSub}</span>

@@ -72,4 +72,5 @@ export const CATEGORIES: Record<string, string> = {
   'buying-guide': 'Buying guides',
   industry: 'Industry',
   hindi: 'हिंदी',
+  punjabi: 'ਪੰਜਾਬੀ',
 };

@@ -14,7 +14,7 @@ export const postUrl = (p: Post) => `/${p.collection}/${p.id}/`;
 export const categoryLabel = (key: string) => CATEGORIES[key] ?? key;
 
 export const fmtDate = (d: Date, lang = 'en') =>
-  d.toLocaleDateString(lang === 'hi' ? 'hi-IN' : 'en-IN', { day: 'numeric', month: 'short', year: 'numeric', timeZone: 'Asia/Kolkata' });
+  d.toLocaleDateString(lang === 'hi' ? 'hi-IN' : lang === 'pa' ? 'pa-IN' : 'en-IN', { day: 'numeric', month: 'short', year: 'numeric', timeZone: 'Asia/Kolkata' });
 
 export const readMinutes = (body = '') => Math.max(2, Math.round(body.split(/\s+/).length / 200));
 

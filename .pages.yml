@@ -38,6 +38,7 @@ content:
             - { value: buying-guide, label: Buying guides }
             - { value: industry, label: Industry }
             - { value: hindi, label: हिंदी }
+            - { value: punjabi, label: ਪੰਜਾਬੀ }
       - name: author
         label: Author
         type: string
@@ -50,6 +51,7 @@ content:
           values:
             - { value: en, label: English }
             - { value: hi, label: Hindi }
+            - { value: pa, label: Punjabi }
       - name: tile
         label: Card headline (big text on the card, e.g. "₹500 ↑ 20.5%")
         type: string

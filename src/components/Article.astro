@@ -1,8 +1,10 @@
 ---
 import { render } from 'astro:content';
 import Base from '../layouts/Base.astro';
-import { allPosts, postUrl, categoryLabel, fmtDate, readMinutes, PRODUCTS, type Post } from '../lib/posts';
+import { allPosts, postUrl, categoryLabel, fmtDate, readMinutes, type Post } from '../lib/posts';
 import { SITE, SITE_NAME, publisher } from '../site.config';
+import { MACHINES, machinePath, tr } from '../data/machines';
+import { LANGS } from '../i18n';
 
 interface Props { post: Post }
 const { post } = Astro.props;
@@ -12,8 +14,17 @@ const isNews = post.collection === 'news';
 const url = SITE + postUrl(post);
 const hubHref = isNews ? '/news/' : '/blog/';
 const hubLabel = isNews ? 'Fake currency news' : 'Blog';
-const product = d.product !== 'none' ? PRODUCTS[d.product] : null;
-const hi = d.lang === 'hi';
+const lang = d.lang;
+const A = {
+  en: { take: 'Key takeaways', cta: 'Catch fake notes at your counter', see: 'See the machine', faq: 'FAQ', src: 'Sources', rel: 'Related', alert: 'Stop fake notes at your counter', demo: 'Free demo in Delhi NCR. Call', or: 'or', book: 'Book a free demo', near: 'Find us near you →' },
+  hi: { take: 'मुख्य बातें', cta: 'काउंटर पर ही नकली नोट पकड़ें', see: 'मशीन देखें', faq: 'सवाल-जवाब', src: 'स्रोत', rel: 'और पढ़ें', alert: 'नकली नोट से बचें', demo: 'दिल्ली NCR में फ्री डेमो। कॉल करें', or: 'या', book: 'फ्री डेमो बुक करें', near: 'हमारा पता देखें →' },
+  pa: { take: 'ਮੁੱਖ ਗੱਲਾਂ', cta: 'ਕਾਊਂਟਰ ਉੱਤੇ ਹੀ ਨਕਲੀ ਨੋਟ ਫੜੋ', see: 'ਮਸ਼ੀਨ ਵੇਖੋ', faq: 'ਸਵਾਲ-ਜਵਾਬ', src: 'ਸਰੋਤ', rel: 'ਹੋਰ ਪੜ੍ਹੋ', alert: 'ਨਕਲੀ ਨੋਟਾਂ ਤੋਂ ਬਚੋ', demo: 'ਦਿੱਲੀ NCR ਵਿੱਚ ਮੁਫ਼ਤ ਡੈਮੋ। ਕਾਲ ਕਰੋ', or: 'ਜਾਂ', book: 'ਮੁਫ਼ਤ ਡੈਮੋ ਬੁੱਕ ਕਰੋ', near: 'ਸਾਡਾ ਪਤਾ ਵੇਖੋ →' },
+}[lang];
+// The machine promoted at the end of the post, in the post's language.
+const slugs = { t800: 't800-mix-value-note-counting-machine', t100: 't100-semi-value-note-counting-machine', ec442: 'kores-easycount-442-note-counting-machine' } as const;
+const m = d.product !== 'none' ? MACHINES.find((x) => x.slug === slugs[d.product]) : undefined;
+const product = m ? { img: m.image, name: tr(m.name, lang), blurb: tr(m.short, lang) + (m.price ? ` MRP ₹${m.price.toLocaleString('en-IN')}.` : ''), href: machinePath(m, lang) } : null;
+const nearHref = lang === 'en' ? '/note-counting-machine-near-me/' : `/${lang}/note-counting-machine-near-me/`;
 const related = (await allPosts()).filter((p) => p.id !== post.id).slice(0, 4);
 
 // Dates are stored as plain days; publish them as 9:00 am IST so Google gets an explicit time zone.
@@ -26,7 +37,7 @@ const schema = [
     '@type': isNews ? 'NewsArticle' : 'BlogPosting',
     headline: d.title,
     description: d.description,
-    inLanguage: d.lang === 'hi' ? 'hi-IN' : 'en-IN',
+    inLanguage: LANGS[lang].htmlLang,
     datePublished: ist(d.pubDate),
     dateModified: ist(d.updatedDate ?? d.pubDate),
     // The byline is a team, not a person, so it is marked up as the organisation.
@@ -50,7 +61,7 @@ const schema = [
     : []),
 ];
 ---
-<Base title={d.title.length > 50 ? d.title : `${d.title} | NoteCountingMachines.com`} description={d.description} type="article" schema={schema} lang={d.lang === 'hi' ? 'hi-IN' : 'en-IN'} image={product?.img}>
+<Base title={d.title.length > 50 ? d.title : `${d.title} | NoteCountingMachines.com`} description={d.description} type="article" schema={schema} lang={LANGS[lang].htmlLang} image={product?.img}>
 <div class="article-wrap">
   <article class="article">
     <nav class="crumbs" aria-label="Breadcrumb"><a href="/">Home</a><span aria-hidden="true">/</span><a href={hubHref}>{hubLabel}</a><span aria-hidden="true">/</span><span>{categoryLabel(d.category)}</span></nav>
@@ -66,7 +77,7 @@ const schema = [
 
     {d.takeaways.length > 0 && (
       <div class="takeaways">
-        <strong>{d.lang === 'hi' ? 'मुख्य बातें' : 'Key takeaways'}</strong>
+        <strong>{A.take}</strong>
         <ul>{d.takeaways.map((t) => <li>{t}</li>)}</ul>
       </div>
     )}
@@ -77,23 +88,23 @@ const schema = [
       <div class="product-cta">
         <div class="product-cta__img"><img src={product.img} alt={product.name} loading="lazy" width="180" height="124"></div>
         <div class="product-cta__text">
-          <strong>{hi ? 'काउंटर पर ही नकली नोट पकड़ें' : 'Catch fake notes at your counter'}</strong>
-          <span>{hi ? product.hiName : product.name}: {hi ? product.hiBlurb : product.blurb}</span>
+          <strong>{A.cta}</strong>
+          <span>{product.name}: {product.blurb}</span>
         </div>
-        <a class="btn btn--amber" href={hi ? product.hiHref : product.href}>{hi ? 'मशीन देखें' : 'See the machine'}</a>
+        <a class="btn btn--amber" href={product.href}>{A.see}</a>
       </div>
     )}
 
     {d.faq.length > 0 && (
       <section class="faq">
-        <h2>{hi ? 'सवाल-जवाब' : 'FAQ'}</h2>
+        <h2>{A.faq}</h2>
         {d.faq.map((f, i) => <details open={i === 0}><summary>{f.q}</summary><p>{f.a}</p></details>)}
       </section>
     )}
 
     {d.sources.length > 0 && (
       <div class="sources">
-        <strong>{hi ? 'स्रोत' : 'Sources'}</strong>
+        <strong>{A.src}</strong>
         <ul style="margin:6px 0 0;padding-left:18px">{d.sources.map((s) => <li><a href={s.url} rel="nofollow noopener" target="_blank">{s.title}</a></li>)}</ul>
       </div>
     )}
@@ -101,14 +112,14 @@ const schema = [
 
   <aside class="side" aria-label="More from the blog">
     <div class="side__box">
-      <strong>{hi ? 'और पढ़ें' : 'Related'}</strong>
+      <strong>{A.rel}</strong>
       {related.map((p) => <a href={postUrl(p)}>{p.data.title}</a>)}
     </div>
     <div class="side__alert">
-      <strong style="font-family:'Archivo',sans-serif;font-size:18px">{hi ? 'नकली नोट से बचें' : 'Stop fake notes at your counter'}</strong>
-      <span>{hi ? 'दिल्ली NCR में फ्री डेमो। कॉल करें' : 'Free demo in Delhi NCR. Call'} <a href="tel:+918826035757">88260 35757</a>, <a href="tel:+918826035858">88260 35858</a> {hi ? "या" : "or"} <a href="tel:+918826035959">88260 35959</a>.</span>
-      <a class="btn btn--ink" style="align-self:flex-start;font-size:14px" href="/#quote">{hi ? 'फ्री डेमो बुक करें' : 'Book a free demo'}</a>
-      <a href={hi ? '/hi/note-counting-machine-near-me/' : '/note-counting-machine-near-me/'} style="font-size:14px;font-weight:600">{hi ? 'हमारा पता देखें →' : 'Find us near you →'}</a>
+      <strong style="font-family:'Archivo',sans-serif;font-size:18px">{A.alert}</strong>
+      <span>{A.demo} <a href="tel:+918826035757">88260 35757</a>, <a href="tel:+918826035858">88260 35858</a> {A.or} <a href="tel:+918826035959">88260 35959</a>.</span>
+      <a class="btn btn--ink" style="align-self:flex-start;font-size:14px" href="/#quote">{A.book}</a>
+      <a href={nearHref} style="font-size:14px;font-weight:600">{A.near}</a>
     </div>
   </aside>
 </div>
