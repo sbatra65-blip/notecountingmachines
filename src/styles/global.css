@@ -128,4 +128,7 @@ img { max-width: 100%; }
 .lang-menu__other { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 2px; }
 .lang-menu__other a { display: block; padding: 8px 12px; border-radius: 8px; text-decoration: none; font-size: 15px; color: #33475B; }
 .lang-menu__other a:hover { background: #F3F5F7; color: #0B1F33; }
-.lang-menu__panel.is-flipped { left: auto; right: 0; }
+.lang-en { display: inline-flex; align-items: center; min-height: 44px; padding: 0 12px; border: 1px solid #B8C4CF; border-radius: 8px; text-decoration: none; font-size: 15px; font-weight: 600; color: #0B1F33; background: #FFFFFF; }
+.lang-en:hover { border-color: #0B1F33; }
+.lang-en[aria-current="true"] { background: #FFF4D6; border-color: #F2A900; color: #6B4C00; }
+.lang-menu:has(.lang-menu__own a[aria-current="true"]) summary { background: #FFF4D6; border-color: #F2A900; color: #6B4C00; }

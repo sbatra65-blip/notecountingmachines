@@ -19,15 +19,16 @@ const others = [
 ];
 const gt = (tl: string) => `https://translate.google.com/translate?sl=auto&tl=${tl}&u=${encodeURIComponent(pageUrl)}`;
 ---
+<a class="lang-en" href={alternates.en ?? (current === 'en' ? Astro.url.pathname : '/')} hreflang="en" lang="en" aria-current={current === 'en' ? 'true' : undefined}>English</a>
 <details class="lang-menu">
-  <summary aria-label="Choose language">
+  <summary aria-label="Choose an Indian language">
     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
-    <span lang={current}>{LANGS[current].label}</span>
+    <span lang={current === 'en' ? 'hi' : current}>{current === 'en' ? 'भाषा' : LANGS[current].label}</span>
     <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg>
   </summary>
   <div class="lang-menu__panel">
     <ul class="lang-menu__own">
-      {LANG_LIST.map((l) => (
+      {LANG_LIST.filter((l) => l !== 'en').map((l) => (
         <li><a href={alternates[l] ?? (l === current ? Astro.url.pathname : LANGS[l].home)} hreflang={l} lang={l} aria-current={l === current ? 'true' : undefined}>{LANGS[l].label}</a></li>
       ))}
     </ul>
@@ -47,13 +48,15 @@ const gt = (tl: string) => `https://translate.google.com/translate?sl=auto&tl=${
       if (!d.contains(e.target as Node)) d.open = false;
     });
   });
-  // Open the panel towards whichever side has room, so it never runs off the screen.
+  // Shift the panel sideways so it always fits on screen, wherever the button wraps to.
   document.querySelectorAll<HTMLDetailsElement>('details.lang-menu').forEach((d) => {
     d.addEventListener('toggle', () => {
       const panel = d.querySelector<HTMLElement>('.lang-menu__panel');
       if (!d.open || !panel) return;
-      panel.classList.remove('is-flipped');
-      if (panel.getBoundingClientRect().right > document.documentElement.clientWidth - 8) panel.classList.add('is-flipped');
+      const left = d.getBoundingClientRect().left;
+      const vw = document.documentElement.clientWidth;
+      const pw = panel.offsetWidth;
+      panel.style.left = Math.max(8 - left, Math.min(0, vw - 8 - left - pw)) + 'px';
     });
   });
   document.addEventListener('keydown', (e) => {
