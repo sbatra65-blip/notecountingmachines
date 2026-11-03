@@ -1,0 +1,10 @@
+---
+import MachinePage from '../../../components/MachinePage.astro';
+import { MACHINES } from '../../../data/machines';
+
+export function getStaticPaths() {
+  return MACHINES.map((m) => ({ params: { slug: m.slug }, props: { m } }));
+}
+const { m } = Astro.props;
+---
+<MachinePage m={m} lang="hi" />

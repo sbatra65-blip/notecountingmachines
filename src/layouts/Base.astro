@@ -12,9 +12,11 @@ interface Props {
   schema?: object[];
   lang?: string;
   noindex?: boolean;
+  // Language versions of this page, e.g. { en: '/machines/x/', hi: '/hi/machines/x/' }, for hreflang tags.
+  alternates?: { en: string; hi: string };
 }
 
-const { title, description, image = '/img/t800-mix-value-note-counting-machine.webp', type = 'website', schema = [], lang = 'en-IN', noindex = false } = Astro.props;
+const { title, description, image = '/img/t800-mix-value-note-counting-machine.webp', type = 'website', schema = [], lang = 'en-IN', noindex = false, alternates } = Astro.props;
 const canonical = new URL(Astro.url.pathname, SITE).href;
 const ogImage = new URL(image, SITE).href;
 const ld = JSON.stringify({ '@context': 'https://schema.org', '@graph': schema });
@@ -27,6 +29,9 @@ const ld = JSON.stringify({ '@context': 'https://schema.org', '@graph': schema }
 <title>{title}</title>
 <meta name="description" content={description}>
 <link rel="canonical" href={canonical}>
+{alternates && <link rel="alternate" hreflang="en-IN" href={new URL(alternates.en, SITE).href} />}
+{alternates && <link rel="alternate" hreflang="hi-IN" href={new URL(alternates.hi, SITE).href} />}
+{alternates && <link rel="alternate" hreflang="x-default" href={new URL(alternates.en, SITE).href} />}
 <meta name="robots" content={noindex ? 'noindex, nofollow' : 'index, follow, max-image-preview:large'}>
 <meta property="og:type" content={type}>
 <meta property="og:site_name" content={SITE_NAME}>

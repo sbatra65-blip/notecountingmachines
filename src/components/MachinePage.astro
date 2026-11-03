@@ -1,0 +1,148 @@
+---
+// One product page, in English or Hindi. Used by /machines/[slug]/ and /hi/machines/[slug]/.
+import Base from '../layouts/Base.astro';
+import { MACHINES, machinePath, inr, type Machine, type Lang } from '../data/machines';
+import { SITE, store, publisher, returnPolicy } from '../site.config';
+
+interface Props { m: Machine; lang: Lang }
+const { m, lang } = Astro.props;
+const hi = lang === 'hi';
+const t = (x: { en: string; hi: string }) => x[lang];
+const url = SITE + machinePath(m, lang);
+const others = MACHINES.filter((o) => o.slug !== m.slug);
+const priceValidUntil = new Date(Date.now() + 365 * 864e5).toISOString().slice(0, 10);
+
+const L = hi
+  ? { home: 'होम', machines: 'नोट गिनने की मशीनें', mrp: 'MRP', incl: 'GST सहित', onRequest: 'कीमत के लिए कॉल करें', call: 'आज की कीमत के लिए कॉल करें', quote: 'कोटेशन / फ्री डेमो', features: 'खास बातें', specs: 'स्पेसिफिकेशन', bestFor: 'किसके लिए सही', buy: 'दिल्ली NCR में खरीदें', buyText: 'दिल्ली, गुड़गांव, नोएडा, फरीदाबाद और गाज़ियाबाद में दुकान या ऑफिस पर फ्री डेमो। GST बिल। पूरे भारत में डिलीवरी (डिलीवरी चार्ज अलग)।', near: 'हमारा पता और नज़दीकी सर्विस देखें →', faq: 'सवाल-जवाब', more: 'दूसरी मशीनें', switchTo: 'Read in English', warrantyOn: '1 साल ऑनसाइट वारंटी', warrantyMf: 'कंपनी वारंटी', updates: 'नए नोटों के लिए सॉफ्टवेयर अपडेट' }
+  : { home: 'Home', machines: 'Note counting machines', mrp: 'MRP', incl: 'incl. GST', onRequest: 'Price on request', call: "Call for today's price", quote: 'Get quote / free demo', features: 'Key features', specs: 'Specifications', bestFor: 'Best for', buy: 'Buy in Delhi NCR', buyText: 'Free demo at your shop or office in Delhi, Gurgaon, Noida, Faridabad and Ghaziabad. GST invoice. Delivery across India (delivery charges extra).', near: 'See our address and nearest service →', faq: 'FAQ', more: 'Other machines', switchTo: 'हिंदी में पढ़ें', warrantyOn: '1-year onsite warranty', warrantyMf: 'Manufacturer warranty', updates: 'Software updates for new notes' };
+
+const product = m.price
+  ? {
+      '@type': 'Product',
+      '@id': url + '#product',
+      name: t(m.name),
+      url,
+      sku: m.model,
+      mpn: m.model,
+      model: m.model,
+      category: 'Note counting machines',
+      brand: { '@type': 'Brand', name: m.brand },
+      image: [SITE + m.image],
+      description: t(m.answer),
+      offers: {
+        '@type': 'Offer',
+        url,
+        price: String(m.price),
+        priceCurrency: 'INR',
+        priceValidUntil,
+        itemCondition: 'https://schema.org/NewCondition',
+        availability: 'https://schema.org/InStock',
+        seller: { '@id': SITE + '/#store' },
+        hasMerchantReturnPolicy: { '@id': SITE + '/#returns' },
+      },
+    }
+  : null;
+
+const schema = [
+  store,
+  publisher,
+  returnPolicy,
+  ...(product ? [product] : []),
+  {
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: L.home, item: SITE + (hi ? '/hi/' : '/') },
+      { '@type': 'ListItem', position: 2, name: L.machines, item: SITE + (hi ? '/hi/' : '/#featured') },
+      { '@type': 'ListItem', position: 3, name: t(m.name), item: url },
+    ],
+  },
+  { '@type': 'FAQPage', mainEntity: m.faq.map((f) => ({ '@type': 'Question', name: t(f.q), acceptedAnswer: { '@type': 'Answer', text: t(f.a) } })) },
+];
+
+const phones = [['+918826035757', '88260 35757'], ['+918826035858', '88260 35858'], ['+918826035959', '88260 35959']];
+---
+<Base
+  title={t(m.title)}
+  description={t(m.description)}
+  image={m.image}
+  schema={schema}
+  lang={hi ? 'hi-IN' : 'en-IN'}
+  alternates={{ en: machinePath(m, 'en'), hi: machinePath(m, 'hi') }}
+>
+<div class="wrap" style="padding-top: 28px; padding-bottom: 64px">
+  <nav class="crumbs" aria-label="Breadcrumb" style="display:flex;flex-wrap:wrap;gap:8px;align-items:center;font-size:14px">
+    <a href={hi ? '/hi/' : '/'}>{L.home}</a><span aria-hidden="true">/</span>
+    <a href={hi ? '/hi/' : '/#featured'}>{L.machines}</a><span aria-hidden="true">/</span>
+    <span>{m.model}</span>
+    <a href={machinePath(m, hi ? 'en' : 'hi')} hreflang={hi ? 'en' : 'hi'} style="margin-left:auto;font-weight:600">{L.switchTo}</a>
+  </nav>
+
+  <section style="display:flex;flex-wrap:wrap;gap:40px;align-items:flex-start;margin-top:20px">
+    <div style="flex:1 1 380px;min-width:0;background:#FFFFFF;border:1px solid #DDE3E9;border-radius:20px;padding:28px">
+      <img src={m.image} alt={`${m.brand} ${t(m.name)}`} width="600" height="420" style="width:100%;height:auto;max-height:420px;object-fit:contain;mix-blend-mode:multiply" fetchpriority="high">
+    </div>
+    <div style="flex:1 1 440px;min-width:0;display:flex;flex-direction:column;gap:18px">
+      <span style="font-size:13px;font-weight:700;letter-spacing:0.06em;color:#52677C">{m.brand.toUpperCase()} · {t(m.type)}</span>
+      <h1 style="margin:0;font-family:'Archivo',sans-serif;font-weight:800;font-size:clamp(30px,4vw,44px);line-height:1.1;letter-spacing:-0.01em">{t(m.name)}</h1>
+      <p style="margin:0;font-size:18px;line-height:1.6;color:#33475B">{t(m.answer)}</p>
+      <div style="font-family:'Archivo',sans-serif;font-weight:800;font-size:30px">
+        {m.price ? <>{`${L.mrp} ${inr(m.price)} `}<span style="font-family:'Public Sans',sans-serif;font-weight:500;font-size:15px;color:#52677C">{L.incl}</span></> : L.onRequest}
+      </div>
+      <ul style="margin:0;padding:0;list-style:none;display:flex;flex-wrap:wrap;gap:8px 18px;font-size:15px;color:#1F6B45;font-weight:600">
+        <li>✓ {m.warrantyOnsite ? L.warrantyOn : L.warrantyMf}</li>
+        <li>✓ {hi ? 'GST बिल' : 'GST invoice'}</li>
+        <li>✓ {L.updates}</li>
+      </ul>
+      <div style="background:#FFFFFF;border:1.5px solid #0B1F33;border-radius:12px;padding:14px 18px;display:flex;flex-direction:column;gap:8px">
+        <span style="font-weight:600;color:#33475B">{L.call}</span>
+        <span style="display:flex;flex-wrap:wrap;gap:6px 18px">{phones.map(([tel, label]) => <a href={`tel:${tel}`} style="color:#0B1F33;text-decoration:none;font-family:'Archivo',sans-serif;font-weight:800;font-size:19px">{label}</a>)}</span>
+      </div>
+      <a class="btn btn--amber" href="/#quote" style="align-self:flex-start">{L.quote}</a>
+    </div>
+  </section>
+
+  <section style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:32px;margin-top:56px">
+    <div>
+      <h2 style="font-family:'Archivo',sans-serif;font-size:26px;margin:0 0 14px">{L.features}</h2>
+      <ul style="margin:0;padding-left:20px;font-size:16px;line-height:1.8;color:#33475B">{m.features.map((f) => <li>{t(f)}</li>)}</ul>
+      <h2 style="font-family:'Archivo',sans-serif;font-size:26px;margin:28px 0 10px">{L.bestFor}</h2>
+      <p style="margin:0;font-size:16px;line-height:1.6;color:#33475B">{t(m.bestFor)}</p>
+    </div>
+    <div>
+      <h2 style="font-family:'Archivo',sans-serif;font-size:26px;margin:0 0 14px">{L.specs}</h2>
+      <table style="width:100%;border-collapse:collapse;background:#FFFFFF;border:1px solid #DDE3E9;border-radius:12px;font-size:15px">
+        <tbody>
+          <tr style="border-top:1px solid #DDE3E9"><th scope="row" style="text-align:left;padding:12px 16px;width:45%">{hi ? 'ब्रांड / मॉडल' : 'Brand / model'}</th><td style="padding:12px 16px">{m.brand} {m.model}</td></tr>
+          {m.specs.map((s) => <tr style="border-top:1px solid #DDE3E9"><th scope="row" style="text-align:left;padding:12px 16px">{t(s.label)}</th><td style="padding:12px 16px">{t(s.value)}</td></tr>)}
+          <tr style="border-top:1px solid #DDE3E9"><th scope="row" style="text-align:left;padding:12px 16px">{L.mrp}</th><td style="padding:12px 16px">{m.price ? `${inr(m.price)} (${L.incl})` : L.onRequest}</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section style="margin-top:48px;background:#0B1F33;color:#FFFFFF;border-radius:20px;padding:32px;display:flex;flex-direction:column;gap:12px">
+    <h2 style="margin:0;font-family:'Archivo',sans-serif;font-size:26px">{L.buy}</h2>
+    <p style="margin:0;font-size:16px;line-height:1.6;color:#C5D0DB">{L.buyText}</p>
+    <a href={hi ? '/hi/note-counting-machine-near-me/' : '/note-counting-machine-near-me/'} style="color:#F2C14E;font-weight:700">{L.near}</a>
+  </section>
+
+  <section class="faq" style="margin-top:48px;max-width:820px">
+    <h2>{L.faq}</h2>
+    {m.faq.map((f, i) => <details open={i === 0}><summary>{t(f.q)}</summary><p>{t(f.a)}</p></details>)}
+  </section>
+
+  <section style="margin-top:48px">
+    <h2 style="font-family:'Archivo',sans-serif;font-size:26px;margin:0 0 16px">{L.more}</h2>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px">
+      {others.map((o) => (
+        <a href={machinePath(o, lang)} style="text-decoration:none;background:#FFFFFF;border:1px solid #DDE3E9;border-radius:14px;padding:18px;display:flex;flex-direction:column;gap:8px">
+          <img loading="lazy" decoding="async" src={o.image} alt={t(o.name)} style="width:100%;height:130px;object-fit:contain;mix-blend-mode:multiply">
+          <strong style="font-family:'Archivo',sans-serif;font-size:17px;color:#0B1F33">{t(o.name)}</strong>
+          <span style="font-size:14px;color:#52677C;line-height:1.5">{t(o.short)}</span>
+          <span style="font-size:14px;font-weight:700;color:#0B1F33">{o.price ? `${L.mrp} ${inr(o.price)} →` : `${L.onRequest} →`}</span>
+        </a>
+      ))}
+    </div>
+  </section>
+</div>
+</Base>

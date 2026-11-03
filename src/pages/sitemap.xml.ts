@@ -3,6 +3,7 @@
 import type { APIRoute } from 'astro';
 import { allPosts, postUrl } from '../lib/posts';
 import { SITE, CATEGORIES } from '../site.config';
+import { MACHINES } from '../data/machines';
 
 const day = (d: Date) => d.toISOString().slice(0, 10);
 
@@ -15,7 +16,13 @@ export const GET: APIRoute = async () => {
     { loc: '/', lastmod: built },
     { loc: '/news/', lastmod: latest(posts.filter((p) => p.collection === 'news')) },
     { loc: '/blog/', lastmod: latest(posts) },
+    { loc: '/hi/', lastmod: built },
+    { loc: '/note-counting-machine-near-me/', lastmod: built },
+    { loc: '/hi/note-counting-machine-near-me/', lastmod: built },
   ];
+  for (const m of MACHINES) {
+    urls.push({ loc: `/machines/${m.slug}/`, lastmod: built }, { loc: `/hi/machines/${m.slug}/`, lastmod: built });
+  }
 
   for (const cat of Object.keys(CATEGORIES).filter((k) => k !== 'counterfeit-news')) {
     urls.push({ loc: `/blog/category/${cat}/`, lastmod: latest(posts.filter((p) => p.data.category === cat)) });
